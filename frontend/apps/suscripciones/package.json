@@ -1,0 +1,11 @@
+{
+  "name": "suscripciones",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"suscripciones microfrontend pending Vite scaffold\"",
+    "build": "echo \"suscripciones build pending Vite scaffold\"",
+    "lint": "echo \"suscripciones lint pending Vite scaffold\""
+  }
+}

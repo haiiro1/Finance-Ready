@@ -1,0 +1,11 @@
+{
+  "name": "prestamos-deudas",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"prestamos-deudas microfrontend pending Vite scaffold\"",
+    "build": "echo \"prestamos-deudas build pending Vite scaffold\"",
+    "lint": "echo \"prestamos-deudas lint pending Vite scaffold\""
+  }
+}

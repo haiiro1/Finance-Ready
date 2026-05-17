@@ -1,0 +1,11 @@
+{
+  "name": "reportes",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"reportes microfrontend pending Vite scaffold\"",
+    "build": "echo \"reportes build pending Vite scaffold\"",
+    "lint": "echo \"reportes lint pending Vite scaffold\""
+  }
+}

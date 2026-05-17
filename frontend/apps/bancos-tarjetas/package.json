@@ -1,0 +1,11 @@
+{
+  "name": "bancos-tarjetas",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"bancos-tarjetas microfrontend pending Vite scaffold\"",
+    "build": "echo \"bancos-tarjetas build pending Vite scaffold\"",
+    "lint": "echo \"bancos-tarjetas lint pending Vite scaffold\""
+  }
+}

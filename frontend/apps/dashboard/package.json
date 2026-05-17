@@ -1,0 +1,11 @@
+{
+  "name": "dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"dashboard microfrontend pending Vite scaffold\"",
+    "build": "echo \"dashboard build pending Vite scaffold\"",
+    "lint": "echo \"dashboard lint pending Vite scaffold\""
+  }
+}

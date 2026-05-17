@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: finance_ready_postgres
+    environment:
+      POSTGRES_USER: finance
+      POSTGRES_PASSWORD: finance
+      POSTGRES_DB: finance_ready
+    ports:
+      - "5432:5432"
+    volumes:
+      - finance_ready_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finance -d finance_ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./Backend
+    container_name: finance_ready_backend
+    environment:
+      APP_NAME: Finance Ready API
+      APP_ENV: docker
+      API_PREFIX: /api/v1
+      CORS_ORIGINS: http://localhost:5173
+      DATABASE_URL: postgresql+psycopg://finance:finance@postgres:5432/finance_ready
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: finance_ready_frontend
+    environment:
+      VITE_API_URL: http://localhost:8000/api/v1
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  finance_ready_postgres_data:

@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finance-ready-backend"
+version = "0.1.0"
+description = "Backend API for Finance Ready personal finance platform."
+requires-python = ">=3.12"
+dependencies = [
+  "alembic>=1.17.2",
+  "fastapi[standard]>=0.124.0",
+  "psycopg[binary]>=3.3.2",
+  "pydantic-settings>=2.12.0",
+  "sqlmodel>=0.0.27",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=9.0.2",
+  "ruff>=0.14.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]

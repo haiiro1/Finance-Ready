@@ -1,0 +1,11 @@
+{
+  "name": "finanzas",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"finanzas microfrontend pending Vite scaffold\"",
+    "build": "echo \"finanzas build pending Vite scaffold\"",
+    "lint": "echo \"finanzas lint pending Vite scaffold\""
+  }
+}

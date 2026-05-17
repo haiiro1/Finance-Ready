@@ -1,0 +1,11 @@
+{
+  "name": "configuracion",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"configuracion microfrontend pending Vite scaffold\"",
+    "build": "echo \"configuracion build pending Vite scaffold\"",
+    "lint": "echo \"configuracion lint pending Vite scaffold\""
+  }
+}
