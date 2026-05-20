@@ -191,3 +191,7 @@ dist/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+codex-personality.md
+gemini-personality.md
+/finance-ready-ai-context
+/review-context
