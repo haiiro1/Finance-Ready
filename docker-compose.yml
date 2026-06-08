@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: finance
       POSTGRES_DB: finance_ready
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - finance_ready_postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -27,7 +27,7 @@ services:
       CORS_ORIGINS: http://localhost:5173
       DATABASE_URL: postgresql+psycopg://finance:finance@postgres:5432/finance_ready
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,7 +50,7 @@ services:
     environment:
       VITE_API_URL: http://localhost:8000/api/v1
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-5173}:5173"
     depends_on:
       backend:
         condition: service_healthy

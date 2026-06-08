@@ -120,6 +120,15 @@ Healthcheck:   http://localhost:8000/api/v1/health
 PostgreSQL:    localhost:5432
 ```
 
+Puertos host configurables si ya existe otro stack local usando los defaults:
+
+```powershell
+$env:POSTGRES_PORT="55432"
+$env:BACKEND_PORT="18000"
+$env:FRONTEND_PORT="15173"
+docker compose up -d --build
+```
+
 Ver estado:
 
 ```powershell
