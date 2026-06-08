@@ -101,6 +101,41 @@ Infraestructura:
 - Docker Compose
 - PostgreSQL 16
 
+## Configuración de Entorno (.env)
+
+El proyecto utiliza archivos `.env` para gestionar variables de configuración, permitiendo separar la configuración del código fuente. Esto es crucial para la seguridad y para tener diferentes configuraciones por entorno (desarrollo local, Docker, producción).
+
+**Nunca se deben subir archivos `.env` al repositorio de Git.**
+
+### 1. Docker Compose (Raíz)
+
+Para configurar los servicios que se levantan con Docker Compose, se utiliza un archivo `.env` en la raíz del proyecto.
+
+```powershell
+# En la raíz del proyecto
+copy .env.example .env
+```
+
+Este archivo es leído automáticamente por `docker-compose` y permite configurar puertos, credenciales de la base de datos y URLs de los servicios.
+
+### 2. Backend (Local)
+
+Para el desarrollo local del backend sin Docker, la configuración se gestiona en su propia carpeta. Al ejecutar `uv run`, Pydantic cargará las variables desde este archivo.
+
+```powershell
+cd F:\Code\Finance-Ready\Backend
+copy .env.example .env
+```
+
+### 3. Frontend (Local)
+
+Para el desarrollo local del frontend (la `shell`), la URL de la API se configura de manera similar. Vite cargará automáticamente este archivo.
+
+```powershell
+cd F:\Code\Finance-Ready\frontend\apps\shell
+copy .env.example .env
+```
+
 ## Levantar Todo con Docker
 
 Desde la raiz del proyecto:
