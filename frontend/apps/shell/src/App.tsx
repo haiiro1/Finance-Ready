@@ -1,140 +1,204 @@
-import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom'
-import './App.css'
+import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const navigationItems = [
-  { label: 'Inicio', path: '/' },
-  { label: 'Dashboard', path: '/dashboard' },
-  { label: 'Finanzas', path: '/finanzas' },
-  { label: 'Bancos y tarjetas', path: '/bancos-tarjetas' },
-  { label: 'Prestamos y deudas', path: '/prestamos-deudas' },
-  { label: 'Suscripciones', path: '/suscripciones' },
-  { label: 'Reportes', path: '/reportes' },
-  { label: 'Configuracion', path: '/configuracion' },
-]
+  { label: "Inicio", path: "/" },
+  { label: "Dashboard", path: "/dashboard" },
+  { label: "Finanzas", path: "/finanzas" },
+  { label: "Bancos y tarjetas", path: "/bancos-tarjetas" },
+  { label: "Prestamos y deudas", path: "/prestamos-deudas" },
+  { label: "Suscripciones", path: "/suscripciones" },
+  { label: "Reportes", path: "/reportes" },
+  { label: "Configuracion", path: "/configuracion" },
+];
 
 const domainPlaceholders = [
   {
-    path: '/dashboard',
-    title: 'Dashboard',
-    description: 'Resumen futuro de obligaciones, vencimientos y capacidad disponible.',
+    path: "/dashboard",
+    title: "Dashboard",
+    description:
+      "Resumen futuro de obligaciones, vencimientos y capacidad disponible.",
   },
   {
-    path: '/finanzas',
-    title: 'Finanzas',
-    description: 'Registro futuro de ingresos, gastos y movimientos personales.',
+    path: "/finanzas",
+    title: "Finanzas",
+    description:
+      "Registro futuro de ingresos, gastos y movimientos personales.",
   },
   {
-    path: '/bancos-tarjetas',
-    title: 'Bancos y tarjetas',
-    description: 'Gestion futura de bancos, tarjetas, cupos, ciclos y fechas de pago.',
+    path: "/bancos-tarjetas",
+    title: "Bancos y tarjetas",
+    description:
+      "Gestion futura de bancos, tarjetas, cupos, ciclos y fechas de pago.",
   },
   {
-    path: '/prestamos-deudas',
-    title: 'Prestamos y deudas',
-    description: 'Seguimiento futuro de deudas, cuotas y prestamos entre personas.',
+    path: "/prestamos-deudas",
+    title: "Prestamos y deudas",
+    description:
+      "Seguimiento futuro de deudas, cuotas y prestamos entre personas.",
   },
   {
-    path: '/suscripciones',
-    title: 'Suscripciones',
-    description: 'Control futuro de recurrencias, participantes y pagos compartidos.',
+    path: "/suscripciones",
+    title: "Suscripciones",
+    description:
+      "Control futuro de recurrencias, participantes y pagos compartidos.",
   },
   {
-    path: '/reportes',
-    title: 'Reportes',
-    description: 'Analisis futuro de compromisos, costos financieros y proyecciones.',
+    path: "/reportes",
+    title: "Reportes",
+    description:
+      "Analisis futuro de compromisos, costos financieros y proyecciones.",
   },
   {
-    path: '/configuracion',
-    title: 'Configuracion',
-    description: 'Preferencias futuras de cuenta, monedas, categorias y seguridad.',
+    path: "/configuracion",
+    title: "Configuracion",
+    description:
+      "Preferencias futuras de cuenta, monedas, categorias y seguridad.",
   },
-]
+];
 
 function ShellLayout() {
   return (
-    <div className="shell">
-      <aside className="shell-sidebar" aria-label="Navegacion principal">
-        <div className="brand">
-          <span className="brand-mark" aria-hidden="true">
-            FR
-          </span>
-          <div>
-            <strong>Finance Ready</strong>
-            <span>Obligaciones personales</span>
-          </div>
-        </div>
-
-        <nav className="shell-nav">
-          {navigationItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-              end={item.path === '/'}
+    <>
+      <div className="grid min-h-screen grid-cols-1 bg-background text-foreground lg:grid-cols-[280px_minmax(0,1fr)]">
+        <aside
+          className="flex flex-col gap-8 border-b bg-card p-4 lg:border-b-0 lg:border-r lg:p-6"
+          aria-label="Navegacion principal"
+        >
+          <div className="flex items-center gap-3">
+            <span
+              className="grid h-11 w-11 flex-none place-items-center rounded-lg bg-primary text-sm font-extrabold text-primary-foreground"
+              aria-hidden="true"
             >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
-
-      <div className="shell-main">
-        <header className="shell-header">
-          <div>
-            <span className="eyebrow">Shell base</span>
-            <h1>Centro de control financiero</h1>
+              FR
+            </span>
+            <div>
+              <strong className="block font-bold text-card-foreground">
+                Finance Ready
+              </strong>
+              <span className="block text-sm text-muted-foreground">
+                Obligaciones personales
+              </span>
+            </div>
           </div>
-          <span className="status-pill">MVP setup</span>
-        </header>
 
-        <main className="shell-content">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            {domainPlaceholders.map((domain) => (
-              <Route
-                key={domain.path}
-                path={domain.path}
-                element={<DomainPlaceholder title={domain.title} description={domain.description} />}
-              />
+          <nav className="grid grid-cols-2 gap-2 lg:flex lg:flex-col lg:gap-1">
+            {navigationItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  [
+                    "rounded-lg px-3 py-2.5 text-sm font-semibold no-underline",
+                    isActive
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                  ].join(" ")
+                }
+                end={item.path === "/"}
+              >
+                {item.label}
+              </NavLink>
             ))}
-          </Routes>
-        </main>
+          </nav>
+        </aside>
+
+        <div className="flex min-w-0 flex-col">
+          <header className="flex flex-col items-start gap-4 border-b bg-card p-5 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-5">
+            <div>
+              <span className="mb-1.5 block text-xs font-bold uppercase text-muted-foreground">
+                Shell base
+              </span>
+              <h1 className="text-2xl font-bold text-card-foreground">
+                Centro de control financiero
+              </h1>
+            </div>
+            <ThemeSwitcher />
+          </header>
+
+          <main className="mx-auto w-full max-w-6xl p-5 lg:p-8">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              {domainPlaceholders.map((domain) => (
+                <Route
+                  key={domain.path}
+                  path={domain.path}
+                  element={
+                    <DomainPlaceholder
+                      title={domain.title}
+                      description={domain.description}
+                    />
+                  }
+                />
+              ))}
+            </Routes>
+          </main>
+        </div>
       </div>
-    </div>
-  )
+    </>
+  );
 }
 
 function HomePage() {
   return (
-    <section className="home-page">
-      <div className="page-heading">
-        <span className="eyebrow">Inicio</span>
-        <h2>Vista inicial de Finance Ready</h2>
-        <p>
-          Shell funcional para centralizar navegacion y conectar los futuros microfrontends por
-          dominio financiero.
+    <section className="flex flex-col gap-6">
+      <div className="max-w-3xl">
+        <span className="mb-1.5 block text-xs font-bold uppercase text-muted-foreground">
+          Inicio
+        </span>
+        <h2 className="text-3xl font-bold text-foreground">
+          Vista inicial de Finance Ready
+        </h2>
+        <p className="text-muted-foreground">
+          Shell funcional para centralizar navegacion y conectar los futuros
+          microfrontends por dominio financiero.
         </p>
       </div>
 
-      <div className="summary-grid" aria-label="Resumen inicial">
-        <SummaryCard label="Obligaciones" value="0" detail="Pendientes de implementar" />
-        <SummaryCard label="Vencimientos" value="0" detail="Sin compromisos registrados" />
-        <SummaryCard label="Suscripciones" value="0" detail="Sin recurrencias activas" />
+      <div
+        className="grid grid-cols-1 gap-4 md:grid-cols-3"
+        aria-label="Resumen inicial"
+      >
+        <SummaryCard
+          label="Obligaciones"
+          value="0"
+          detail="Pendientes de implementar"
+        />
+        <SummaryCard
+          label="Vencimientos"
+          value="0"
+          detail="Sin compromisos registrados"
+        />
+        <SummaryCard
+          label="Suscripciones"
+          value="0"
+          detail="Sin recurrencias activas"
+        />
       </div>
 
-      <section className="workspace-panel">
-        <h3>Dominios preparados</h3>
-        <div className="domain-grid">
+      <section className="rounded-lg border bg-card p-5">
+        <h3 className="mb-4 text-lg font-bold text-card-foreground">
+          Dominios preparados
+        </h3>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {domainPlaceholders.map((domain) => (
-            <NavLink key={domain.path} to={domain.path} className="domain-card">
-              <strong>{domain.title}</strong>
-              <span>{domain.description}</span>
+            <NavLink
+              key={domain.path}
+              to={domain.path}
+              className="flex min-h-27.5 flex-col gap-2 rounded-lg border bg-card p-4 text-inherit no-underline hover:border-primary"
+            >
+              <strong className="font-bold text-card-foreground">
+                {domain.title}
+              </strong>
+              <span className="text-muted-foreground">
+                {domain.description}
+              </span>
             </NavLink>
           ))}
         </div>
       </section>
     </section>
-  )
+  );
 }
 
 function SummaryCard({
@@ -142,27 +206,39 @@ function SummaryCard({
   value,
   detail,
 }: {
-  label: string
-  value: string
-  detail: string
+  label: string;
+  value: string;
+  detail: string;
 }) {
   return (
-    <article className="summary-card">
-      <span>{label}</span>
-      <strong>{value}</strong>
-      <p>{detail}</p>
+    <article className="rounded-lg border bg-card p-4">
+      <span className="block text-sm font-bold text-muted-foreground">
+        {label}
+      </span>
+      <strong className="my-3 block text-4xl font-bold leading-none text-card-foreground">
+        {value}
+      </strong>
+      <p className="text-muted-foreground">{detail}</p>
     </article>
-  )
+  );
 }
 
-function DomainPlaceholder({ title, description }: { title: string; description: string }) {
+function DomainPlaceholder({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
   return (
-    <section className="domain-page">
-      <span className="eyebrow">Microfrontend pendiente</span>
-      <h2>{title}</h2>
-      <p>{description}</p>
+    <section className="flex max-w-3xl flex-col gap-2 rounded-lg border bg-card p-7">
+      <span className="mb-1.5 block text-xs font-bold uppercase text-muted-foreground">
+        Microfrontend pendiente
+      </span>
+      <h2 className="text-3xl font-bold text-card-foreground">{title}</h2>
+      <p className="text-muted-foreground">{description}</p>
     </section>
-  )
+  );
 }
 
 function App() {
@@ -170,7 +246,7 @@ function App() {
     <BrowserRouter>
       <ShellLayout />
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
