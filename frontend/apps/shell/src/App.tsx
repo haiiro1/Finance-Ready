@@ -1,4 +1,10 @@
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@finance-ready/ui-kit";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const navigationItems = [
@@ -176,27 +182,35 @@ function HomePage() {
         />
       </div>
 
-      <section className="rounded-lg border bg-card p-5">
-        <h3 className="mb-4 text-lg font-bold text-card-foreground">
-          Dominios preparados
-        </h3>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {domainPlaceholders.map((domain) => (
-            <NavLink
-              key={domain.path}
-              to={domain.path}
-              className="flex min-h-27.5 flex-col gap-2 rounded-lg border bg-card p-4 text-inherit no-underline hover:border-primary"
-            >
-              <strong className="font-bold text-card-foreground">
-                {domain.title}
-              </strong>
-              <span className="text-muted-foreground">
-                {domain.description}
-              </span>
-            </NavLink>
-          ))}
-        </div>
-      </section>
+      <Card>
+        <CardHeader>
+          <CardTitle>Dominios preparados</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {domainPlaceholders.map((domain) => (
+              <NavLink
+                key={domain.path}
+                to={domain.path}
+                className="block no-underline"
+              >
+                <Card className="h-full transition-colors hover:border-primary">
+                  <CardHeader className="p-4 pb-2">
+                    <CardTitle className="text-base font-bold">
+                      {domain.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <p className="text-sm text-muted-foreground">
+                      {domain.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </NavLink>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </section>
   );
 }
@@ -211,15 +225,17 @@ function SummaryCard({
   detail: string;
 }) {
   return (
-    <article className="rounded-lg border bg-card p-4">
-      <span className="block text-sm font-bold text-muted-foreground">
-        {label}
-      </span>
-      <strong className="my-3 block text-4xl font-bold leading-none text-card-foreground">
-        {value}
-      </strong>
-      <p className="text-muted-foreground">{detail}</p>
-    </article>
+    <Card>
+      <CardHeader>
+        <p className="text-sm font-bold text-muted-foreground">{label}</p>
+      </CardHeader>
+      <CardContent>
+        <p className="text-4xl font-bold leading-none text-card-foreground">
+          {value}
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{detail}</p>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -231,13 +247,17 @@ function DomainPlaceholder({
   description: string;
 }) {
   return (
-    <section className="flex max-w-3xl flex-col gap-2 rounded-lg border bg-card p-7">
-      <span className="mb-1.5 block text-xs font-bold uppercase text-muted-foreground">
-        Microfrontend pendiente
-      </span>
-      <h2 className="text-3xl font-bold text-card-foreground">{title}</h2>
-      <p className="text-muted-foreground">{description}</p>
-    </section>
+    <Card className="max-w-3xl">
+      <CardHeader>
+        <p className="text-xs font-bold uppercase text-muted-foreground">
+          Microfrontend pendiente
+        </p>
+        <CardTitle className="text-3xl">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground">{description}</p>
+      </CardContent>
+    </Card>
   );
 }
 

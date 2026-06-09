@@ -22,6 +22,9 @@ importers:
 
   apps/shell:
     dependencies:
+      '@finance-ready/ui-kit':
+        specifier: workspace:*
+        version: link:../../packages/ui-kit
       react:
         specifier: ^19.2.6
         version: 19.2.6
@@ -79,7 +82,18 @@ importers:
 
   packages/shared-types: {}
 
-  packages/ui-kit: {}
+  packages/ui-kit:
+    dependencies:
+      react:
+        specifier: ^19.0.0
+        version: 19.2.6
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
 
 packages:
 
