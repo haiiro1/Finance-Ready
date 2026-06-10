@@ -124,7 +124,7 @@ Para el desarrollo local del backend sin Docker, la configuración se gestiona e
 
 ```powershell
 cd F:\Code\Finance-Ready\Backend
-copy .env.example .env
+copy .env.example .env.dev
 ```
 
 ### 3. Frontend (Local)
