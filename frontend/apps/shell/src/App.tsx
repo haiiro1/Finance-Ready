@@ -1,65 +1,53 @@
-import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@finance-ready/ui-kit";
-import { ThemeSwitcher } from "./ThemeSwitcher";
+import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@finance-ready/ui-kit';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 const navigationItems = [
-  { label: "Inicio", path: "/" },
-  { label: "Dashboard", path: "/dashboard" },
-  { label: "Finanzas", path: "/finanzas" },
-  { label: "Bancos y tarjetas", path: "/bancos-tarjetas" },
-  { label: "Prestamos y deudas", path: "/prestamos-deudas" },
-  { label: "Suscripciones", path: "/suscripciones" },
-  { label: "Reportes", path: "/reportes" },
-  { label: "Configuracion", path: "/configuracion" },
+  { label: 'Inicio', path: '/' },
+  { label: 'Dashboard', path: '/dashboard' },
+  { label: 'Finanzas', path: '/finanzas' },
+  { label: 'Bancos y tarjetas', path: '/bancos-tarjetas' },
+  { label: 'Prestamos y deudas', path: '/prestamos-deudas' },
+  { label: 'Suscripciones', path: '/suscripciones' },
+  { label: 'Reportes', path: '/reportes' },
+  { label: 'Configuracion', path: '/configuracion' },
 ];
 
 const domainPlaceholders = [
   {
-    path: "/dashboard",
-    title: "Dashboard",
-    description:
-      "Resumen futuro de obligaciones, vencimientos y capacidad disponible.",
+    path: '/dashboard',
+    title: 'Dashboard',
+    description: 'Resumen futuro de obligaciones, vencimientos y capacidad disponible.',
   },
   {
-    path: "/finanzas",
-    title: "Finanzas",
-    description:
-      "Registro futuro de ingresos, gastos y movimientos personales.",
+    path: '/finanzas',
+    title: 'Finanzas',
+    description: 'Registro futuro de ingresos, gastos y movimientos personales.',
   },
   {
-    path: "/bancos-tarjetas",
-    title: "Bancos y tarjetas",
-    description:
-      "Gestion futura de bancos, tarjetas, cupos, ciclos y fechas de pago.",
+    path: '/bancos-tarjetas',
+    title: 'Bancos y tarjetas',
+    description: 'Gestion futura de bancos, tarjetas, cupos, ciclos y fechas de pago.',
   },
   {
-    path: "/prestamos-deudas",
-    title: "Prestamos y deudas",
-    description:
-      "Seguimiento futuro de deudas, cuotas y prestamos entre personas.",
+    path: '/prestamos-deudas',
+    title: 'Prestamos y deudas',
+    description: 'Seguimiento futuro de deudas, cuotas y prestamos entre personas.',
   },
   {
-    path: "/suscripciones",
-    title: "Suscripciones",
-    description:
-      "Control futuro de recurrencias, participantes y pagos compartidos.",
+    path: '/suscripciones',
+    title: 'Suscripciones',
+    description: 'Control futuro de recurrencias, participantes y pagos compartidos.',
   },
   {
-    path: "/reportes",
-    title: "Reportes",
-    description:
-      "Analisis futuro de compromisos, costos financieros y proyecciones.",
+    path: '/reportes',
+    title: 'Reportes',
+    description: 'Analisis futuro de compromisos, costos financieros y proyecciones.',
   },
   {
-    path: "/configuracion",
-    title: "Configuracion",
-    description:
-      "Preferencias futuras de cuenta, monedas, categorias y seguridad.",
+    path: '/configuracion',
+    title: 'Configuracion',
+    description: 'Preferencias futuras de cuenta, monedas, categorias y seguridad.',
   },
 ];
 
@@ -79,12 +67,8 @@ function ShellLayout() {
               FR
             </span>
             <div>
-              <strong className="block font-bold text-card-foreground">
-                Finance Ready
-              </strong>
-              <span className="block text-sm text-muted-foreground">
-                Obligaciones personales
-              </span>
+              <strong className="block font-bold text-card-foreground">Finance Ready</strong>
+              <span className="block text-sm text-muted-foreground">Obligaciones personales</span>
             </div>
           </div>
 
@@ -95,13 +79,13 @@ function ShellLayout() {
                 to={item.path}
                 className={({ isActive }) =>
                   [
-                    "rounded-lg px-3 py-2.5 text-sm font-semibold no-underline",
+                    'rounded-lg px-3 py-2.5 text-sm font-semibold no-underline',
                     isActive
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                  ].join(" ")
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                  ].join(' ')
                 }
-                end={item.path === "/"}
+                end={item.path === '/'}
               >
                 {item.label}
               </NavLink>
@@ -130,10 +114,7 @@ function ShellLayout() {
                   key={domain.path}
                   path={domain.path}
                   element={
-                    <DomainPlaceholder
-                      title={domain.title}
-                      description={domain.description}
-                    />
+                    <DomainPlaceholder title={domain.title} description={domain.description} />
                   }
                 />
               ))}
@@ -152,34 +133,17 @@ function HomePage() {
         <span className="mb-1.5 block text-xs font-bold uppercase text-muted-foreground">
           Inicio
         </span>
-        <h2 className="text-3xl font-bold text-foreground">
-          Vista inicial de Finance Ready
-        </h2>
+        <h2 className="text-3xl font-bold text-foreground">Vista inicial de Finance Ready</h2>
         <p className="text-muted-foreground">
-          Shell funcional para centralizar navegacion y conectar los futuros
-          microfrontends por dominio financiero.
+          Shell funcional para centralizar navegacion y conectar los futuros microfrontends por
+          dominio financiero.
         </p>
       </div>
 
-      <div
-        className="grid grid-cols-1 gap-4 md:grid-cols-3"
-        aria-label="Resumen inicial"
-      >
-        <SummaryCard
-          label="Obligaciones"
-          value="0"
-          detail="Pendientes de implementar"
-        />
-        <SummaryCard
-          label="Vencimientos"
-          value="0"
-          detail="Sin compromisos registrados"
-        />
-        <SummaryCard
-          label="Suscripciones"
-          value="0"
-          detail="Sin recurrencias activas"
-        />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3" aria-label="Resumen inicial">
+        <SummaryCard label="Obligaciones" value="0" detail="Pendientes de implementar" />
+        <SummaryCard label="Vencimientos" value="0" detail="Sin compromisos registrados" />
+        <SummaryCard label="Suscripciones" value="0" detail="Sin recurrencias activas" />
       </div>
 
       <Card>
@@ -189,21 +153,13 @@ function HomePage() {
         <CardContent>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {domainPlaceholders.map((domain) => (
-              <NavLink
-                key={domain.path}
-                to={domain.path}
-                className="block no-underline"
-              >
+              <NavLink key={domain.path} to={domain.path} className="block no-underline">
                 <Card className="h-full transition-colors hover:border-primary">
                   <CardHeader className="p-4 pb-2">
-                    <CardTitle className="text-base font-bold">
-                      {domain.title}
-                    </CardTitle>
+                    <CardTitle className="text-base font-bold">{domain.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
-                    <p className="text-sm text-muted-foreground">
-                      {domain.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{domain.description}</p>
                   </CardContent>
                 </Card>
               </NavLink>
@@ -215,43 +171,25 @@ function HomePage() {
   );
 }
 
-function SummaryCard({
-  label,
-  value,
-  detail,
-}: {
-  label: string;
-  value: string;
-  detail: string;
-}) {
+function SummaryCard({ label, value, detail }: { label: string; value: string; detail: string }) {
   return (
     <Card>
       <CardHeader>
         <p className="text-sm font-bold text-muted-foreground">{label}</p>
       </CardHeader>
       <CardContent>
-        <p className="text-4xl font-bold leading-none text-card-foreground">
-          {value}
-        </p>
+        <p className="text-4xl font-bold leading-none text-card-foreground">{value}</p>
         <p className="mt-2 text-sm text-muted-foreground">{detail}</p>
       </CardContent>
     </Card>
   );
 }
 
-function DomainPlaceholder({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
+function DomainPlaceholder({ title, description }: { title: string; description: string }) {
   return (
     <Card className="max-w-3xl">
       <CardHeader>
-        <p className="text-xs font-bold uppercase text-muted-foreground">
-          Microfrontend pendiente
-        </p>
+        <p className="text-xs font-bold uppercase text-muted-foreground">Microfrontend pendiente</p>
         <CardTitle className="text-3xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>

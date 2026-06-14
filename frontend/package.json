@@ -12,7 +12,12 @@
     "dev:reportes": "pnpm --filter reportes dev",
     "dev:configuracion": "pnpm --filter configuracion dev",
     "build": "pnpm -r build",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
-  "packageManager": "pnpm@11.1.2"
+  "packageManager": "pnpm@11.1.2",
+  "devDependencies": {
+    "prettier": "^3.8.4"
+  }
 }
