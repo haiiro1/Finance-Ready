@@ -1,35 +1,35 @@
-import { useTheme } from "./useTheme";
+import { useTheme } from './useTheme';
 
 export function ThemeSwitcher() {
   const { resolvedTheme, setTheme } = useTheme();
 
-  const isDark = resolvedTheme === "dark";
+  const isDark = resolvedTheme === 'dark';
 
-  const toggleTheme = () => setTheme(isDark ? "light" : "dark");
+  const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+      aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
       className="relative inline-grid h-9 w-18 grid-cols-2 items-center rounded-full border bg-muted p-1 text-muted-foreground transition-colors duration-300 ease-out hover:bg-accent"
     >
       {/* Sliding indicator */}
       <span
         aria-hidden="true"
         className={[
-          "absolute left-1 top-1 h-7 w-7 rounded-full bg-card shadow ring-1 ring-border/50 transition-transform duration-300 ease-out",
-          isDark ? "translate-x-9" : "translate-x-0",
-        ].join(" ")}
+          'absolute left-1 top-1 h-7 w-7 rounded-full bg-card shadow ring-1 ring-border/50 transition-transform duration-300 ease-out',
+          isDark ? 'translate-x-9' : 'translate-x-0',
+        ].join(' ')}
       />
 
       {/* Sun icon */}
       <span
         aria-hidden="true"
         className={[
-          "z-10 grid place-items-center transition-colors duration-300",
-          !isDark ? "text-card-foreground" : "text-muted-foreground",
-        ].join(" ")}
+          'z-10 grid place-items-center transition-colors duration-300',
+          !isDark ? 'text-card-foreground' : 'text-muted-foreground',
+        ].join(' ')}
       >
         <SunIcon className="h-4 w-4" />
       </span>
@@ -38,9 +38,9 @@ export function ThemeSwitcher() {
       <span
         aria-hidden="true"
         className={[
-          "z-10 grid place-items-center transition-colors duration-300",
-          isDark ? "text-card-foreground" : "text-muted-foreground",
-        ].join(" ")}
+          'z-10 grid place-items-center transition-colors duration-300',
+          isDark ? 'text-card-foreground' : 'text-muted-foreground',
+        ].join(' ')}
       >
         <MoonIcon className="h-4 w-4" />
       </span>

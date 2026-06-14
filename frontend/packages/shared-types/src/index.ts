@@ -1,6 +1,6 @@
-export type CurrencyCode = 'CLP' | 'USD' | 'EUR'
+export type CurrencyCode = 'CLP' | 'USD' | 'EUR';
 
 export type Money = {
-  amount: number
-  currency: CurrencyCode
-}
+  amount: number;
+  currency: CurrencyCode;
+};
