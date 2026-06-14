@@ -18,16 +18,6 @@ El proyecto ya tiene una base funcional con:
 - Frontend Vite React TypeScript en `apps/shell`.
 - Estructura preparada para microfrontends por dominio.
 
-## Contextos IA
-
-Los contextos/personality para trabajar con IA en este proyecto estan en carpetas dedicadas
-en la raiz:
-
-- `finance-ready-ai-context/`: contexto para desarrollo de la app.
-- `review-context/`: contexto para revisiones, debugging y analisis de riesgo.
-- `codex-personality.md`: prompt base para configurar Codex en este proyecto.
-- `gemini-personality.md`: prompt base para configurar Gemini como agente de desarrollo.
-
 ## Estructura
 
 ```txt
