@@ -4,7 +4,7 @@ from app.core.config import settings
 
 # The engine is the entry point to the database.
 # pool_pre_ping=True checks connections for liveness before handing them out.
-engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+engine = create_engine(settings.database_url, pool_pre_ping=True)
 
 
 def get_session():

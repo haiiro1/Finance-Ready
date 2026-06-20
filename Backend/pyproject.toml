@@ -10,6 +10,9 @@ dependencies = [
     "sqlmodel",
     "alembic",
     "psycopg[binary]",
+    "bcrypt",
+    "python-jose[cryptography]",
+    "email-validator",
 ]
 requires-python = ">=3.12"
 
@@ -22,6 +25,10 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
 
 [tool.uv.sources]
 finance-ready-backend = { path = "." }
