@@ -64,7 +64,7 @@ build: check-env
 	docker compose build
 
 up: check-env
-	docker compose up -d --wait
+	docker compose up -d --build
 	docker compose ps
 
 down:

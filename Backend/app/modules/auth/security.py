@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
-from jose import jwt
+from jose import JWTError, jwt
 
 from app.core.config import settings
 
@@ -23,3 +23,18 @@ def create_access_token(subject: str | int, expires_delta: timedelta | None = No
         "exp": expire,
     }
     return jwt.encode(payload, settings.secret_key, algorithm=settings.jwt_algorithm)
+
+
+def decode_access_token(token: str) -> dict:
+    try:
+        return jwt.decode(token, settings.secret_key, algorithms=[settings.jwt_algorithm])
+    except JWTError as exc:
+        raise ValueError("Invalid token") from exc
+
+
+def get_token_subject(token: str) -> str:
+    payload = decode_access_token(token)
+    sub = payload.get("sub")
+    if not sub:
+        raise ValueError("Token missing subject")
+    return sub
