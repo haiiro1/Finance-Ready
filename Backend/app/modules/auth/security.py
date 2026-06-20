@@ -1,3 +1,5 @@
+import hmac
+import secrets
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
@@ -38,3 +40,23 @@ def get_token_subject(token: str) -> str:
     if not sub:
         raise ValueError("Token missing subject")
     return sub
+
+
+def generate_recovery_code() -> str:
+    return f"{secrets.randbelow(1_000_000):06d}"
+
+
+def hash_recovery_code(code: str) -> str:
+    return hmac.new(
+        settings.secret_key.encode(), code.encode(), "sha256"
+    ).hexdigest()
+
+
+def verify_recovery_code(code: str, code_hash: str) -> bool:
+    expected = hash_recovery_code(code)
+    return hmac.compare_digest(expected, code_hash)
+
+
+generate_verification_code = generate_recovery_code
+hash_verification_code = hash_recovery_code
+verify_verification_code = verify_recovery_code

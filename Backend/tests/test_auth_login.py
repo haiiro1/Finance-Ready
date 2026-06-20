@@ -40,6 +40,7 @@ def registered_user_fixture(session: Session):
         email="login@example.com",
         hashed_password=hash_password("StrongPass123"),
         full_name="Login User",
+        email_verified=True,
     )
     session.add(user)
     session.commit()
@@ -117,6 +118,7 @@ def test_login_inactive_user_returns_403(client, session):
         email="inactive@example.com",
         hashed_password=hash_password("StrongPass123"),
         is_active=False,
+        email_verified=True,
     )
     session.add(user)
     session.commit()
@@ -125,6 +127,43 @@ def test_login_inactive_user_returns_403(client, session):
         "/api/v1/auth/login",
         json={"email": "inactive@example.com", "password": "StrongPass123"},
     )
+    assert response.status_code == 403
+
+
+def test_login_unverified_email_returns_403(client, session):
+    user = User(
+        email="unverified@example.com",
+        hashed_password=hash_password("StrongPass123"),
+        email_verified=False,
+    )
+    session.add(user)
+    session.commit()
+
+    response = client.post(
+        "/api/v1/auth/login",
+        json={"email": "unverified@example.com", "password": "StrongPass123"},
+    )
+    assert response.status_code == 403
+
+
+def test_me_with_unverified_email_returns_403(client, session):
+    from datetime import datetime, timedelta, timezone
+
+    user = User(
+        email="unverified2@example.com",
+        hashed_password=hash_password("StrongPass123"),
+        email_verified=False,
+    )
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    token = jwt.encode(
+        {"sub": str(user.id), "exp": datetime.now(timezone.utc) + timedelta(minutes=30)},
+        settings.secret_key,
+        algorithm=settings.jwt_algorithm,
+    )
+    response = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 403
 
 

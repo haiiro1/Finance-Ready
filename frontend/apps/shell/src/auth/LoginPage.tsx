@@ -3,10 +3,13 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@finance-ready/ui-kit';
 import { useAuth } from './useAuth';
 
+const _UNVERIFIED_MSG = 'Debes verificar tu email antes de iniciar sesion';
+
 export function LoginPage() {
   const { isAuthenticated, isLoading, login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   if (isLoading) return null;
@@ -18,12 +21,17 @@ export function LoginPage() {
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
     const password = (form.elements.namedItem('password') as HTMLInputElement).value;
     setError(null);
+    setUnverifiedEmail(null);
     setSubmitting(true);
     try {
       await login(email, password);
       navigate('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al iniciar sesion');
+      const msg = err instanceof Error ? err.message : 'Error al iniciar sesion';
+      if (msg === _UNVERIFIED_MSG) {
+        setUnverifiedEmail(email);
+      }
+      setError(msg);
     } finally {
       setSubmitting(false);
     }
@@ -72,20 +80,39 @@ export function LoginPage() {
                 />
               </div>
               {error && (
-                <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                  {error}
-                </p>
+                <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  <p>{error}</p>
+                  {unverifiedEmail && (
+                    <Link
+                      to="/verify-email"
+                      state={{ email: unverifiedEmail }}
+                      className="mt-1 block font-medium underline"
+                    >
+                      Verificar mi email
+                    </Link>
+                  )}
+                </div>
               )}
               <Button type="submit" disabled={submitting} className="w-full">
                 {submitting ? 'Ingresando...' : 'Ingresar'}
               </Button>
             </form>
-            <p className="mt-4 text-center text-sm text-muted-foreground">
-              ¿No tienes cuenta?{' '}
-              <Link to="/register" className="font-medium text-primary hover:underline">
-                Registrate
-              </Link>
-            </p>
+            <div className="mt-4 flex flex-col gap-2 text-center text-sm text-muted-foreground">
+              <p>
+                <Link
+                  to="/forgot-password"
+                  className="font-medium text-primary hover:underline"
+                >
+                  Olvide mi contrasena
+                </Link>
+              </p>
+              <p>
+                ¿No tienes cuenta?{' '}
+                <Link to="/register" className="font-medium text-primary hover:underline">
+                  Registrate
+                </Link>
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>

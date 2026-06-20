@@ -13,11 +13,12 @@ dependencies = [
     "bcrypt",
     "python-jose[cryptography]",
     "email-validator",
+    "httpx",
 ]
 requires-python = ">=3.12"
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff", "httpx"]
+dev = ["pytest", "ruff"]
 
 [tool.ruff]
 line-length = 100

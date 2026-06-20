@@ -33,7 +33,11 @@ def client_fixture(session: Session):
     app.dependency_overrides.clear()
 
 
-_VALID_PAYLOAD = {"email": "user@example.com", "password": "StrongPass123"}
+_VALID_PAYLOAD = {
+    "email": "user@example.com",
+    "password": "StrongPass123",
+    "password_confirmation": "StrongPass123",
+}
 
 
 def test_register_returns_201(client):
@@ -60,6 +64,13 @@ def test_register_persists_user(client, session):
     assert user.is_active is True
 
 
+def test_register_user_is_email_unverified(client, session):
+    response = client.post("/api/v1/auth/register", json=_VALID_PAYLOAD)
+    user = session.exec(select(User).where(User.email == "user@example.com")).first()
+    assert user.email_verified is False
+    assert response.json()["user"]["email_verified"] is False
+
+
 def test_register_password_is_hashed(client, session):
     client.post("/api/v1/auth/register", json=_VALID_PAYLOAD)
     user = session.exec(select(User).where(User.email == "user@example.com")).first()
@@ -81,7 +92,11 @@ def test_register_duplicate_email_returns_409(client):
 def test_register_invalid_email_returns_422(client):
     response = client.post(
         "/api/v1/auth/register",
-        json={"email": "not-an-email", "password": "StrongPass123"},
+        json={
+            "email": "not-an-email",
+            "password": "StrongPass123",
+            "password_confirmation": "StrongPass123",
+        },
     )
     assert response.status_code == 422
 
@@ -89,7 +104,7 @@ def test_register_invalid_email_returns_422(client):
 def test_register_short_password_returns_422(client):
     response = client.post(
         "/api/v1/auth/register",
-        json={"email": "user@example.com", "password": "Ab1"},
+        json={"email": "user@example.com", "password": "Ab1", "password_confirmation": "Ab1"},
     )
     assert response.status_code == 422
 
@@ -97,7 +112,11 @@ def test_register_short_password_returns_422(client):
 def test_register_password_without_number_returns_422(client):
     response = client.post(
         "/api/v1/auth/register",
-        json={"email": "user@example.com", "password": "NoNumbersHere"},
+        json={
+            "email": "user@example.com",
+            "password": "NoNumbersHere",
+            "password_confirmation": "NoNumbersHere",
+        },
     )
     assert response.status_code == 422
 
@@ -105,7 +124,23 @@ def test_register_password_without_number_returns_422(client):
 def test_register_password_without_letter_returns_422(client):
     response = client.post(
         "/api/v1/auth/register",
-        json={"email": "user@example.com", "password": "12345678"},
+        json={
+            "email": "user@example.com",
+            "password": "12345678",
+            "password_confirmation": "12345678",
+        },
+    )
+    assert response.status_code == 422
+
+
+def test_register_password_confirmation_mismatch_returns_422(client):
+    response = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "user@example.com",
+            "password": "StrongPass123",
+            "password_confirmation": "DifferentPass456",
+        },
     )
     assert response.status_code == 422
 
@@ -130,7 +165,11 @@ def test_register_with_full_name(client):
 def test_register_email_is_lowercased(client, session):
     client.post(
         "/api/v1/auth/register",
-        json={"email": "USER@EXAMPLE.COM", "password": "StrongPass123"},
+        json={
+            "email": "USER@EXAMPLE.COM",
+            "password": "StrongPass123",
+            "password_confirmation": "StrongPass123",
+        },
     )
     user = session.exec(select(User).where(User.email == "user@example.com")).first()
     assert user is not None
@@ -142,4 +181,6 @@ def test_register_user_response_has_expected_fields(client):
     assert "id" in user
     assert "email" in user
     assert "is_active" in user
+    assert "email_verified" in user
     assert user["is_active"] is True
+    assert user["email_verified"] is False
