@@ -26,6 +26,9 @@ importers:
 
   apps/shell:
     dependencies:
+      '@finance-ready/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@finance-ready/ui-kit':
         specifier: workspace:*
         version: link:../../packages/ui-kit

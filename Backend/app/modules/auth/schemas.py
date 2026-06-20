@@ -25,6 +25,11 @@ class UserRegisterRequest(SQLModel):
         return stripped if stripped else None
 
 
+class UserLoginRequest(SQLModel):
+    email: EmailStr
+    password: str
+
+
 class UserResponse(SQLModel):
     id: int
     email: str
@@ -32,7 +37,10 @@ class UserResponse(SQLModel):
     is_active: bool
 
 
-class RegisterResponse(SQLModel):
+class AuthResponse(SQLModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+
+RegisterResponse = AuthResponse

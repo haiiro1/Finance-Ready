@@ -1,6 +1,10 @@
-import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@finance-ready/ui-kit';
+import { BrowserRouter, NavLink, Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@finance-ready/ui-kit';
 import { ThemeSwitcher } from './ThemeSwitcher';
+import { LoginPage } from './auth/LoginPage';
+import { RegisterPage } from './auth/RegisterPage';
+import { ProtectedRoute } from './auth/ProtectedRoute';
+import { useAuth } from './auth/useAuth';
 
 const navigationItems = [
   { label: 'Inicio', path: '/' },
@@ -52,77 +56,77 @@ const domainPlaceholders = [
 ];
 
 function ShellLayout() {
+  const { user, logout } = useAuth();
+
   return (
-    <>
-      <div className="grid min-h-screen grid-cols-1 bg-background text-foreground lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside
-          className="flex flex-col gap-8 border-b bg-card p-4 lg:border-b-0 lg:border-r lg:p-6"
-          aria-label="Navegacion principal"
-        >
-          <div className="flex items-center gap-3">
-            <span
-              className="grid h-11 w-11 flex-none place-items-center rounded-lg bg-primary text-sm font-extrabold text-primary-foreground"
-              aria-hidden="true"
-            >
-              FR
-            </span>
-            <div>
-              <strong className="block font-bold text-card-foreground">Finance Ready</strong>
-              <span className="block text-sm text-muted-foreground">Obligaciones personales</span>
-            </div>
+    <div className="grid min-h-screen grid-cols-1 bg-background text-foreground lg:grid-cols-[280px_minmax(0,1fr)]">
+      <aside
+        className="flex flex-col gap-8 border-b bg-card p-4 lg:border-b-0 lg:border-r lg:p-6"
+        aria-label="Navegacion principal"
+      >
+        <div className="flex items-center gap-3">
+          <span
+            className="grid h-11 w-11 flex-none place-items-center rounded-lg bg-primary text-sm font-extrabold text-primary-foreground"
+            aria-hidden="true"
+          >
+            FR
+          </span>
+          <div>
+            <strong className="block font-bold text-card-foreground">Finance Ready</strong>
+            <span className="block text-sm text-muted-foreground">Obligaciones personales</span>
           </div>
-
-          <nav className="grid grid-cols-2 gap-2 lg:flex lg:flex-col lg:gap-1">
-            {navigationItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) =>
-                  [
-                    'rounded-lg px-3 py-2.5 text-sm font-semibold no-underline',
-                    isActive
-                      ? 'bg-accent text-accent-foreground'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
-                  ].join(' ')
-                }
-                end={item.path === '/'}
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-        </aside>
-
-        <div className="flex min-w-0 flex-col">
-          <header className="flex flex-col items-start gap-4 border-b bg-card p-5 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-5">
-            <div>
-              <span className="mb-1.5 block text-xs font-bold uppercase text-muted-foreground">
-                Shell base
-              </span>
-              <h1 className="text-2xl font-bold text-card-foreground">
-                Centro de control financiero
-              </h1>
-            </div>
-            <ThemeSwitcher />
-          </header>
-
-          <main className="mx-auto w-full max-w-6xl p-5 lg:p-8">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              {domainPlaceholders.map((domain) => (
-                <Route
-                  key={domain.path}
-                  path={domain.path}
-                  element={
-                    <DomainPlaceholder title={domain.title} description={domain.description} />
-                  }
-                />
-              ))}
-            </Routes>
-          </main>
         </div>
+
+        <nav className="grid grid-cols-2 gap-2 lg:flex lg:flex-col lg:gap-1">
+          {navigationItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                [
+                  'rounded-lg px-3 py-2.5 text-sm font-semibold no-underline',
+                  isActive
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                ].join(' ')
+              }
+              end={item.path === '/'}
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="mt-auto border-t pt-4">
+          {user && (
+            <p className="mb-2 truncate text-xs text-muted-foreground">{user.email}</p>
+          )}
+          <Button variant="ghost" onClick={logout} className="w-full justify-start text-sm">
+            Cerrar sesion
+          </Button>
+        </div>
+      </aside>
+
+      <div className="flex min-w-0 flex-col">
+        <header className="flex flex-col items-start gap-4 border-b bg-card p-5 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-5">
+          <div>
+            <span className="mb-1.5 block text-xs font-bold uppercase text-muted-foreground">
+              Shell base
+            </span>
+            <h1 className="text-2xl font-bold text-card-foreground">
+              Centro de control financiero
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeSwitcher />
+          </div>
+        </header>
+
+        <main className="mx-auto w-full max-w-6xl p-5 lg:p-8">
+          <Outlet />
+        </main>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -202,7 +206,25 @@ function DomainPlaceholder({ title, description }: { title: string; description:
 function App() {
   return (
     <BrowserRouter>
-      <ShellLayout />
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<ShellLayout />}>
+            <Route path="/" element={<HomePage />} />
+            {domainPlaceholders.map((domain) => (
+              <Route
+                key={domain.path}
+                path={domain.path}
+                element={
+                  <DomainPlaceholder title={domain.title} description={domain.description} />
+                }
+              />
+            ))}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }
