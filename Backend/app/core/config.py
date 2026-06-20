@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
     cors_origins: str = "http://localhost:5173"
     database_url: str = "postgresql+psycopg://finance:finance@localhost:5432/finance_ready"
+    secret_key: str = "dev-secret-change-me-in-production"
+    access_token_expire_minutes: int = 30
+    jwt_algorithm: str = "HS256"
 
 
 settings = Settings()

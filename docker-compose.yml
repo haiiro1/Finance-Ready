@@ -29,6 +29,9 @@ services:
       APP_ENV: docker
       DATABASE_URL: "postgresql+psycopg://${POSTGRES_USER:-finance}:${POSTGRES_PASSWORD:-finance}@postgres:5432/${POSTGRES_DB:-finance_ready}"
       CORS_ORIGINS: "http://localhost:${FRONTEND_PORT:-5173}"
+      SECRET_KEY: "${SECRET_KEY:-dev-secret-change-me-in-production}"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "${ACCESS_TOKEN_EXPIRE_MINUTES:-30}"
+      JWT_ALGORITHM: "${JWT_ALGORITHM:-HS256}"
     volumes:
       - ./Backend:/app
     healthcheck:
