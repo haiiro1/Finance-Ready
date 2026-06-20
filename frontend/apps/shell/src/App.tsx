@@ -1,8 +1,11 @@
 import { BrowserRouter, NavLink, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@finance-ready/ui-kit';
 import { ThemeSwitcher } from './ThemeSwitcher';
+import { ForgotPasswordPage } from './auth/ForgotPasswordPage';
 import { LoginPage } from './auth/LoginPage';
 import { RegisterPage } from './auth/RegisterPage';
+import { ResetPasswordPage } from './auth/ResetPasswordPage';
+import { VerifyEmailPage } from './auth/VerifyEmailPage';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { useAuth } from './auth/useAuth';
 
@@ -209,6 +212,9 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<ShellLayout />}>
             <Route path="/" element={<HomePage />} />

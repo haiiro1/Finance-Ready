@@ -18,12 +18,28 @@ export function RegisterPage() {
     const form = e.currentTarget;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
     const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+    const passwordConfirmation = (
+      form.elements.namedItem('password_confirmation') as HTMLInputElement
+    ).value;
     const fullName = (form.elements.namedItem('full_name') as HTMLInputElement).value.trim();
+
+    if (password !== passwordConfirmation) {
+      setError('Las contraseñas no coinciden');
+      return;
+    }
+
     setError(null);
     setSubmitting(true);
     try {
-      await apiRegister({ email, password, full_name: fullName || undefined });
-      navigate('/login');
+      const res = await apiRegister({
+        email,
+        password,
+        password_confirmation: passwordConfirmation,
+        full_name: fullName || undefined,
+      });
+      navigate('/verify-email', {
+        state: { email, verification_code: res.verification_code, email_sent: res.email_sent },
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrar');
     } finally {
@@ -83,6 +99,22 @@ export function RegisterPage() {
                   required
                   autoComplete="new-password"
                   placeholder="Mínimo 8 caracteres, letra y número"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="password_confirmation"
+                  className="text-sm font-medium text-foreground"
+                >
+                  Confirmar contraseña
+                </label>
+                <Input
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  placeholder="Repite tu contraseña"
                 />
               </div>
               {error && (
