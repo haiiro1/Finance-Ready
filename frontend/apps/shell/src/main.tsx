@@ -7,7 +7,7 @@ import { ThemeProvider } from './ThemeProvider';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="system" storageKey="finance-ready-theme">
+    <ThemeProvider defaultTheme="light" storageKey="finance-ready-theme">
       <AuthProvider>
         <App />
       </AuthProvider>

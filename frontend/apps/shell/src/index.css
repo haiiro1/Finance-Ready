@@ -8,7 +8,7 @@
     --card-foreground: 222 14% 20%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 14% 20%;
-    --primary: 174 65% 30%; /* teal-800 */
+    --primary: 175 84% 32%; /* teal-600 */
     --primary-foreground: 0 0% 100%;
     --secondary: 220 13% 91%; /* slate-200 */
     --secondary-foreground: 222 14% 20%;
@@ -20,7 +20,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 220 13% 88%; /* slate-200 adjusted */
     --input: 220 13% 88%;
-    --ring: 174 65% 30%;
+    --ring: 175 84% 32%;
     --radius: 0.5rem;
   }
 
@@ -31,7 +31,7 @@
     --card-foreground: 220 13% 90%;
     --popover: 222 14% 10%;
     --popover-foreground: 220 13% 90%;
-    --primary: 174 65% 30%;
+    --primary: 175 84% 32%; /* teal-600 */
     --primary-foreground: 0 0% 100%;
     --secondary: 222 14% 20%; /* slate-800 */
     --secondary-foreground: 220 13% 90%;
