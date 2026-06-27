@@ -1,5 +1,7 @@
 @import 'tailwindcss';
+@config '../tailwind.config.js';
 @source '../../../packages/ui-kit/src';
+@variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
@@ -62,5 +64,23 @@
     font-feature-settings:
       'rlig' 1,
       'calt' 1;
+  }
+
+  /* Force native form controls to match the active color scheme so
+     browser-rendered parts (select dropdown list, input caret, etc.)
+     render correctly in both light and dark modes. */
+  input, select, textarea {
+    color-scheme: light;
+  }
+
+  .dark input,
+  .dark select,
+  .dark textarea {
+    color-scheme: dark;
+  }
+
+  select option {
+    background-color: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
   }
 }

@@ -7,9 +7,9 @@ import { RegisterPage } from './auth/RegisterPage';
 import { ResetPasswordPage } from './auth/ResetPasswordPage';
 import { VerifyEmailPage } from './auth/VerifyEmailPage';
 import { ProtectedRoute } from './auth/ProtectedRoute';
+import { FinanzasPage } from './finanzas/FinanzasPage';
 
 const domainRoutes = [
-  { path: '/finanzas', title: 'Finanzas', description: 'Registro de ingresos, gastos y movimientos personales.' },
   { path: '/bancos-tarjetas', title: 'Bancos y tarjetas', description: 'Gestion de bancos, tarjetas, cupos, ciclos y fechas de pago.' },
   { path: '/prestamos-deudas', title: 'Prestamos y deudas', description: 'Seguimiento de deudas, cuotas y prestamos entre personas.' },
   { path: '/suscripciones', title: 'Suscripciones', description: 'Control de recurrencias, participantes y pagos compartidos.' },
@@ -47,6 +47,7 @@ function App() {
           <Route element={<ShellLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/finanzas" element={<FinanzasPage />} />
             {domainRoutes.map((domain) => (
               <Route
                 key={domain.path}
