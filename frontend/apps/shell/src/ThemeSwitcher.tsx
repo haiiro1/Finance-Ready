@@ -1,49 +1,37 @@
 import { useTheme } from './useTheme';
 
-export function ThemeSwitcher() {
+export function ThemeSwitcher({ compact = false }: { compact?: boolean }) {
   const { resolvedTheme, setTheme } = useTheme();
-
   const isDark = resolvedTheme === 'dark';
-
   const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
+  const label = isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+
+  if (compact) {
+    return (
+      <button
+        type="button"
+        onClick={toggleTheme}
+        aria-label={label}
+        className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      >
+        {isDark ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
+      </button>
+    );
+  }
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-      className="relative inline-grid h-9 w-18 grid-cols-2 items-center rounded-full border bg-muted p-1 text-muted-foreground transition-colors duration-300 ease-out hover:bg-accent"
+      aria-label={label}
+      className="flex h-9 w-full items-center gap-2.5 rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
     >
-      {/* Sliding indicator */}
-      <span
-        aria-hidden="true"
-        className={[
-          'absolute left-1 top-1 h-7 w-7 rounded-full bg-card shadow ring-1 ring-border/50 transition-transform duration-300 ease-out',
-          isDark ? 'translate-x-9' : 'translate-x-0',
-        ].join(' ')}
-      />
-
-      {/* Sun icon */}
-      <span
-        aria-hidden="true"
-        className={[
-          'z-10 grid place-items-center transition-colors duration-300',
-          !isDark ? 'text-card-foreground' : 'text-muted-foreground',
-        ].join(' ')}
-      >
-        <SunIcon className="h-4 w-4" />
-      </span>
-
-      {/* Moon icon */}
-      <span
-        aria-hidden="true"
-        className={[
-          'z-10 grid place-items-center transition-colors duration-300',
-          isDark ? 'text-card-foreground' : 'text-muted-foreground',
-        ].join(' ')}
-      >
-        <MoonIcon className="h-4 w-4" />
-      </span>
+      {isDark ? (
+        <SunIcon className="h-4 w-4 shrink-0" />
+      ) : (
+        <MoonIcon className="h-4 w-4 shrink-0" />
+      )}
+      <span>{isDark ? 'Modo claro' : 'Modo oscuro'}</span>
     </button>
   );
 }
@@ -62,15 +50,15 @@ function SunIcon(props: React.SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <circle cx="12" cy="12" r="4"></circle>
-      <path d="M12 2v2"></path>
-      <path d="M12 20v2"></path>
-      <path d="m4.93 4.93 1.41 1.41"></path>
-      <path d="m17.66 17.66 1.41 1.41"></path>
-      <path d="M2 12h2"></path>
-      <path d="M20 12h2"></path>
-      <path d="m6.34 17.66-1.41 1.41"></path>
-      <path d="m19.07 4.93-1.41 1.41"></path>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2" />
+      <path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" />
+      <path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" />
+      <path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" />
+      <path d="m19.07 4.93-1.41 1.41" />
     </svg>
   );
 }
@@ -89,7 +77,7 @@ function MoonIcon(props: React.SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
     </svg>
   );
 }
