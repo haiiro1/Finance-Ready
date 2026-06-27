@@ -9,17 +9,11 @@ import { VerifyEmailPage } from './auth/VerifyEmailPage';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { FinanzasPage } from './finanzas/FinanzasPage';
 import { BancosTarjetasPage } from './bancos-tarjetas/BancosTarjetasPage';
-<<<<<<< Updated upstream
-
-const domainRoutes = [
-  { path: '/prestamos-deudas', title: 'Prestamos y deudas', description: 'Seguimiento de deudas, cuotas y prestamos entre personas.' },
-=======
 import { PrestamosDeudasPage } from './prestamos-deudas/PrestamosDeudasPage';
+import { ReportesPage } from './reportes/ReportesPage';
 
 const domainRoutes = [
->>>>>>> Stashed changes
   { path: '/suscripciones', title: 'Suscripciones', description: 'Control de recurrencias, participantes y pagos compartidos.' },
-  { path: '/reportes', title: 'Reportes', description: 'Analisis de compromisos, costos financieros y proyecciones.' },
   { path: '/configuracion', title: 'Configuracion', description: 'Preferencias de cuenta, monedas, categorias y seguridad.' },
 ];
 
@@ -55,10 +49,8 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/finanzas" element={<FinanzasPage />} />
             <Route path="/bancos-tarjetas" element={<BancosTarjetasPage />} />
-<<<<<<< Updated upstream
-=======
             <Route path="/prestamos-deudas" element={<PrestamosDeudasPage />} />
->>>>>>> Stashed changes
+            <Route path="/reportes" element={<ReportesPage />} />
             {domainRoutes.map((domain) => (
               <Route
                 key={domain.path}
