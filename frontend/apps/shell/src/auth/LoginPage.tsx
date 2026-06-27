@@ -111,7 +111,7 @@ export function LoginPage() {
 
             <div className="mb-4.5 mt-1.5 flex items-center justify-between gap-3 text-xs">
               <label className="flex cursor-pointer select-none items-center gap-2 text-muted-foreground">
-                <input type="checkbox" className="h-3.75 w-3.75 accent-teal-600" />
+                <input type="checkbox" className="h-3.75 w-3.75 cursor-pointer accent-teal-600 dark:scheme-dark" />
                 Recordarme
               </label>
               <Link
@@ -141,9 +141,7 @@ export function LoginPage() {
               onClick={() => setGoogleClicked((v) => !v)}
               className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[10px] border border-border bg-card text-sm font-bold text-card-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             >
-              <span className="text-base font-black text-[#4285F4] [font-family:Arial,sans-serif]">
-                G
-              </span>
+              <span className="text-base font-black text-[#4285F4] font-[Arial,sans-serif]">G</span>
               Iniciar sesion con Google
             </button>
 

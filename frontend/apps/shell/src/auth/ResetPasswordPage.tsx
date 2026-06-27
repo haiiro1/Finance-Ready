@@ -1,8 +1,9 @@
 import { type FormEvent, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@finance-ready/ui-kit';
+import { Button, Card, Input } from '@finance-ready/ui-kit';
 import { confirmPasswordReset } from './authApi';
 import { useAuth } from './useAuth';
+import { AuthLayout, LogoChip } from './AuthLayout';
 
 export function ResetPasswordPage() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -46,108 +47,122 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <div className="grid min-h-screen place-items-center bg-background p-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-xl bg-primary text-base font-extrabold text-primary-foreground">
-            FR
-          </div>
-          <h1 className="text-2xl font-bold text-foreground">Finance Ready</h1>
-          <p className="text-sm text-muted-foreground">Restablece tu contrasena</p>
+    <AuthLayout>
+      <Card className="w-full max-w-107.5 rounded-[18px] p-7 shadow-[0_1px_2px_rgba(15,23,42,.06),0_16px_40px_rgba(15,23,42,.06)]">
+        <div className="mb-5.5 flex items-center gap-4 font-bold tracking-[-0.02em]">
+          <LogoChip large />
+          <span className="text-2xl">Finance Ready</span>
         </div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Nueva contrasena</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {success ? (
-              <div className="flex flex-col gap-4">
-                <p className="text-sm text-muted-foreground">
-                  Tu contrasena fue actualizada correctamente.
-                </p>
-                <Link
-                  to="/login"
-                  className="inline-block w-full rounded-md bg-primary px-4 py-2 text-center text-sm font-semibold text-primary-foreground hover:opacity-90"
-                >
-                  Iniciar sesion
-                </Link>
+
+        {success ? (
+          <div>
+            <h2 className="m-0 mb-2 text-[25px] font-bold tracking-[-0.04em]">
+              Contrasena restablecida
+            </h2>
+            <div className="mb-6 rounded-[10px] bg-emerald-50 p-3 text-sm font-semibold text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <p className="m-0">Tu contrasena fue actualizada correctamente.</p>
+            </div>
+            <Link
+              to="/login"
+              className="flex h-11 w-full items-center justify-center rounded-[10px] bg-primary text-sm font-bold text-primary-foreground transition-colors hover:opacity-90 active:translate-y-px"
+            >
+              Iniciar sesion
+            </Link>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <h2 className="m-0 mb-2 text-[25px] font-bold tracking-[-0.04em]">
+              Nueva contrasena
+            </h2>
+            <p className="m-0 mb-6 leading-relaxed text-muted-foreground">
+              Ingresa el codigo de recuperacion y define tu nueva contrasena.
+            </p>
+
+            {error && (
+              <div className="mb-4 rounded-[10px] bg-destructive/10 p-3 text-sm font-semibold text-destructive">
+                <p className="m-0">{error}</p>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="email" className="text-sm font-medium text-foreground">
-                    Email
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    autoComplete="email"
-                    placeholder="tu@email.com"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="code" className="text-sm font-medium text-foreground">
-                    Codigo de recuperacion
-                  </label>
-                  <Input
-                    id="code"
-                    name="code"
-                    type="text"
-                    required
-                    autoComplete="one-time-code"
-                    placeholder="123456"
-                    inputMode="numeric"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="new_password" className="text-sm font-medium text-foreground">
-                    Nueva contrasena
-                  </label>
-                  <Input
-                    id="new_password"
-                    name="new_password"
-                    type="password"
-                    required
-                    autoComplete="new-password"
-                    placeholder="Minimo 8 caracteres, letra y numero"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="new_password_confirmation"
-                    className="text-sm font-medium text-foreground"
-                  >
-                    Confirmar nueva contrasena
-                  </label>
-                  <Input
-                    id="new_password_confirmation"
-                    name="new_password_confirmation"
-                    type="password"
-                    required
-                    autoComplete="new-password"
-                    placeholder="Repite tu nueva contrasena"
-                  />
-                </div>
-                {error && (
-                  <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                    {error}
-                  </p>
-                )}
-                <Button type="submit" disabled={submitting} className="w-full">
-                  {submitting ? 'Guardando...' : 'Restablecer contrasena'}
-                </Button>
-                <p className="text-center text-sm text-muted-foreground">
-                  <Link to="/login" className="font-medium text-primary hover:underline">
-                    Volver al inicio de sesion
-                  </Link>
-                </p>
-              </form>
             )}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+
+            <div className="mb-3.75">
+              <label htmlFor="email" className="mb-1.75 block text-xs font-bold">
+                Correo electronico
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="tu@correo.com"
+              />
+            </div>
+
+            <div className="mb-3.75">
+              <label htmlFor="code" className="mb-1.75 block text-xs font-bold">
+                Codigo de recuperacion
+              </label>
+              <Input
+                id="code"
+                name="code"
+                type="text"
+                required
+                autoComplete="one-time-code"
+                inputMode="numeric"
+                placeholder="123456"
+              />
+            </div>
+
+            <div className="mb-3.75">
+              <label htmlFor="new_password" className="mb-1.75 block text-xs font-bold">
+                Nueva contrasena
+              </label>
+              <Input
+                id="new_password"
+                name="new_password"
+                type="password"
+                required
+                autoComplete="new-password"
+                placeholder="Minimo 8 caracteres, letra y numero"
+              />
+            </div>
+
+            <div className="mb-4.5">
+              <label
+                htmlFor="new_password_confirmation"
+                className="mb-1.75 block text-xs font-bold"
+              >
+                Confirmar nueva contrasena
+              </label>
+              <Input
+                id="new_password_confirmation"
+                name="new_password_confirmation"
+                type="password"
+                required
+                autoComplete="new-password"
+                placeholder="Repite tu nueva contrasena"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="h-11 w-full rounded-[10px] active:translate-y-px"
+            >
+              {submitting ? 'Guardando...' : 'Restablecer contrasena'}
+            </Button>
+
+            <p className="mt-5 text-center text-xs text-muted-foreground">
+              <Link
+                to="/login"
+                className="font-bold text-teal-700 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300"
+              >
+                Volver al inicio de sesion
+              </Link>
+            </p>
+          </form>
+        )}
+      </Card>
+    </AuthLayout>
   );
 }
