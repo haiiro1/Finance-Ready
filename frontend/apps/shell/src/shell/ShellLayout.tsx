@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { SVGProps } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import { Button } from '@finance-ready/ui-kit';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { ThemeSwitcher } from '../ThemeSwitcher';
 import { useAuth } from '../auth/useAuth';
 import { LogoChip } from '../auth/AuthLayout';
@@ -37,6 +36,93 @@ const navGroups: NavGroup[] = [
   },
 ];
 
+function UserMenu() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const displayName = user?.full_name ?? user?.email?.split('@')[0] ?? '';
+  const initial = displayName[0]?.toUpperCase() ?? '?';
+
+  useEffect(() => {
+    if (!open) return;
+    function onClickOutside(e: MouseEvent) {
+      if (!containerRef.current?.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('mousedown', onClickOutside);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClickOutside);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  function goToConfig() {
+    navigate('/configuracion');
+    setOpen(false);
+  }
+
+  function handleLogout() {
+    setOpen(false);
+    logout();
+  }
+
+  return (
+    <div ref={containerRef} className="relative">
+      {/* Dropdown — opens downward, right-aligned */}
+      {open && (
+        <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-xl border bg-card shadow-lg">
+          <div className="p-1">
+            <button
+              type="button"
+              onClick={goToConfig}
+              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+            >
+              <SettingsIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
+              Configuracion de cuenta
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <LogOutIcon className="h-4 w-4 shrink-0" />
+              Cerrar sesion
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Trigger — chip visual igual al anterior, ahora clickable */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        title={user?.email}
+        className="flex items-center gap-2 rounded-full border bg-card px-2.5 py-1.5 transition-colors hover:bg-muted"
+      >
+        <span
+          className="grid h-6 w-6 flex-none place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground"
+          aria-hidden="true"
+        >
+          {initial}
+        </span>
+        <span className="hidden max-w-27.5 truncate text-xs font-medium text-card-foreground sm:block">
+          {displayName}
+        </span>
+        <ChevronDownIcon
+          className={`hidden h-3 w-3 shrink-0 text-muted-foreground transition-transform sm:block ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+    </div>
+  );
+}
+
 function SidebarContent({
   onClose,
   onNavClick,
@@ -44,10 +130,6 @@ function SidebarContent({
   onClose?: () => void;
   onNavClick?: () => void;
 }) {
-  const { user, logout } = useAuth();
-  const userInitial = user?.email?.[0]?.toUpperCase() ?? '?';
-  const userAlias = user?.full_name ?? user?.email?.split('@')[0] ?? '';
-
   return (
     <>
       {/* Brand */}
@@ -98,41 +180,12 @@ function SidebarContent({
           </div>
         ))}
       </nav>
-
-      {/* Footer */}
-      <div className="flex-none border-t p-4">
-        <div className="mb-2 flex items-center gap-2.5 px-1">
-          <span
-            className="grid h-7 w-7 flex-none place-items-center rounded-full bg-muted text-xs font-bold text-foreground"
-            aria-hidden="true"
-          >
-            {userInitial}
-          </span>
-          <div className="min-w-0">
-            {userAlias && (
-              <p className="truncate text-xs font-semibold text-foreground/80">{userAlias}</p>
-            )}
-            <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
-          </div>
-        </div>
-        <Button
-          variant="ghost"
-          onClick={logout}
-          className="h-9 w-full justify-start text-sm text-muted-foreground hover:text-foreground"
-        >
-          Cerrar sesion
-        </Button>
-      </div>
     </>
   );
 }
 
 export function ShellLayout() {
-  const { user } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const userInitial = user?.email?.[0]?.toUpperCase() ?? '?';
-  const userAlias = user?.full_name ?? user?.email?.split('@')[0] ?? '';
 
   const closeMobile = () => setMobileOpen(false);
 
@@ -225,21 +278,8 @@ export function ShellLayout() {
             {/* Theme switcher */}
             <ThemeSwitcher compact />
 
-            {/* Profile chip */}
-            <div
-              className="flex items-center gap-2 rounded-full border bg-card px-2.5 py-1.5"
-              title={user?.email}
-            >
-              <span
-                className="grid h-6 w-6 flex-none place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground"
-                aria-hidden="true"
-              >
-                {userInitial}
-              </span>
-              <span className="hidden max-w-27.5 truncate text-xs font-medium text-card-foreground sm:block">
-                {userAlias}
-              </span>
-            </div>
+            {/* User menu */}
+            <UserMenu />
           </div>
         </header>
 
@@ -287,6 +327,33 @@ function BellIcon(props: SVGProps<SVGSVGElement>) {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
       <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+    </svg>
+  );
+}
+
+function SettingsIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function LogOutIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <polyline points="6 9 12 15 18 9" />
     </svg>
   );
 }

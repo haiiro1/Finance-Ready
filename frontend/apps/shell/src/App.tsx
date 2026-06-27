@@ -11,10 +11,10 @@ import { FinanzasPage } from './finanzas/FinanzasPage';
 import { BancosTarjetasPage } from './bancos-tarjetas/BancosTarjetasPage';
 import { PrestamosDeudasPage } from './prestamos-deudas/PrestamosDeudasPage';
 import { ReportesPage } from './reportes/ReportesPage';
+import { ConfiguracionPage } from './configuracion/ConfiguracionPage';
 
 const domainRoutes = [
   { path: '/suscripciones', title: 'Suscripciones', description: 'Control de recurrencias, participantes y pagos compartidos.' },
-  { path: '/configuracion', title: 'Configuracion', description: 'Preferencias de cuenta, monedas, categorias y seguridad.' },
 ];
 
 function DomainPlaceholder({ title, description }: { title: string; description: string }) {
@@ -51,6 +51,7 @@ function App() {
             <Route path="/bancos-tarjetas" element={<BancosTarjetasPage />} />
             <Route path="/prestamos-deudas" element={<PrestamosDeudasPage />} />
             <Route path="/reportes" element={<ReportesPage />} />
+            <Route path="/configuracion" element={<ConfiguracionPage />} />
             {domainRoutes.map((domain) => (
               <Route
                 key={domain.path}

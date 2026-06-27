@@ -77,7 +77,7 @@ export function FinanzasPage() {
               aria-label="Periodo (no disponible aun)"
               className="h-8 rounded-lg border bg-secondary px-2 text-xs text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <option>Este ano</option>
+              <option>Este año</option>
             </select>
           </div>
           <EmptyState label="Grafico proximamente" text="Aqui veras la evolucion de tus finanzas." />
