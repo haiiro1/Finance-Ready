@@ -15,7 +15,7 @@ export function LoginPage() {
   const [googleClicked, setGoogleClicked] = useState(false);
 
   if (isLoading) return null;
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -27,7 +27,7 @@ export function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-      navigate('/');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Error al iniciar sesion';
       if (msg === _UNVERIFIED_MSG) setUnverifiedEmail(email);

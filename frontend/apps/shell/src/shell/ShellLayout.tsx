@@ -69,6 +69,7 @@ function UserMenu() {
   function handleLogout() {
     setOpen(false);
     logout();
+    navigate('/login', { replace: true });
   }
 
   return (

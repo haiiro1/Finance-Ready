@@ -22,7 +22,7 @@ export function VerifyEmailPage() {
   const [emailSent, setEmailSent] = useState<boolean>(state?.email_sent ?? true);
 
   if (isLoading) return null;
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   const prefillEmail = state?.email ?? '';
 

@@ -13,7 +13,6 @@ import { PrestamosDeudasPage } from './prestamos-deudas/PrestamosDeudasPage';
 import { SuscripcionesPage } from './suscripciones/SuscripcionesPage';
 import { ReportesPage } from './reportes/ReportesPage';
 import { ConfiguracionPage } from './configuracion/ConfiguracionPage';
-import { LandingPage } from './landing/LandingPage';
 import { PrivacyPage } from './landing/PrivacyPage';
 import { TermsPage } from './landing/TermsPage';
 
@@ -21,7 +20,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/login" element={<LoginPage />} />

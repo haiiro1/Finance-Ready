@@ -11,7 +11,7 @@ export function RegisterPage() {
   const [submitting, setSubmitting] = useState(false);
 
   if (isLoading) return null;
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
