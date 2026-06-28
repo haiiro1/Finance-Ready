@@ -112,3 +112,7 @@ class EmailVerificationResendResponse(SQLModel):
     message: str
     verification_code: str | None = None
     email_sent: bool = True
+
+
+class GoogleLoginRequest(SQLModel):
+    credential: str

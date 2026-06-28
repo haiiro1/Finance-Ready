@@ -4,6 +4,7 @@ import type {
   EmailVerificationConfirmRequest,
   EmailVerificationResendRequest,
   EmailVerificationResendResponse,
+  GoogleLoginRequest,
   LoginRequest,
   PasswordRecoveryRequest,
   PasswordRecoveryResponse,
@@ -93,6 +94,33 @@ export async function confirmEmailVerification(
     throw new Error('Error al verificar el email');
   }
   return response.json() as Promise<{ message: string }>;
+}
+
+export async function loginWithGoogle(request: GoogleLoginRequest): Promise<AuthResponse> {
+  const response = await fetch(`${appConfig.apiUrl}/auth/google`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as {
+      detail?: { code?: string; message?: string };
+    } | null;
+    const code = body?.detail?.code;
+    const message = body?.detail?.message;
+    if (code === 'google_link_required') {
+      const err = new Error(
+        message ?? 'Ya existe una cuenta con este email. Inicia sesion con tu contrasena.',
+      );
+      (err as Error & { code: string }).code = 'google_link_required';
+      throw err;
+    }
+    if (code === 'inactive_user') throw new Error(message ?? 'La cuenta esta desactivada.');
+    if (code === 'google_auth_unavailable')
+      throw new Error(message ?? 'Autenticacion con Google no disponible.');
+    throw new Error(message ?? 'Error al iniciar sesion con Google.');
+  }
+  return response.json() as Promise<AuthResponse>;
 }
 
 export async function resendEmailVerification(

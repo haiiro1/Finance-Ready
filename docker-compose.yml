@@ -39,6 +39,7 @@ services:
       EMAIL_FROM_NAME: "${EMAIL_FROM_NAME:-Finance Ready}"
       FRONTEND_URL: "${FRONTEND_URL:-http://localhost:5173}"
       ADMIN_SETUP_TOKEN: "${ADMIN_SETUP_TOKEN:-}"
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
     volumes:
       - ./Backend:/app
     healthcheck:
@@ -64,6 +65,7 @@ services:
       - "${FRONTEND_PORT:-5173}:5173"
     environment:
       VITE_API_URL: "http://localhost:${BACKEND_PORT:-8000}/api/v1"
+      VITE_GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:5173 || exit 1"]
       interval: 5s

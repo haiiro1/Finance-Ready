@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     email_from_name: str = "Finance Ready"
     frontend_url: str = "http://localhost:5173"
     admin_setup_token: str = ""
+    google_client_id: str = ""
 
 
 settings = Settings()

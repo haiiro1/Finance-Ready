@@ -1,18 +1,43 @@
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useCallback, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Button, Card, Input } from '@finance-ready/ui-kit';
 import { useAuth } from './useAuth';
+import { GoogleSignInButton } from './GoogleSignInButton';
 
 const _UNVERIFIED_MSG = 'Debes verificar tu email antes de iniciar sesion';
 
 export function LoginPage() {
-  const { isAuthenticated, isLoading, login } = useAuth();
+  const { isAuthenticated, isLoading, login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [googleClicked, setGoogleClicked] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const handleGoogleCredential = useCallback(
+    async (credential: string) => {
+      setError(null);
+      setUnverifiedEmail(null);
+      setGoogleLoading(true);
+      try {
+        await loginWithGoogle(credential);
+        navigate('/dashboard', { replace: true });
+      } catch (err) {
+        const e = err as Error & { code?: string };
+        if (e.code === 'google_link_required') {
+          setError(
+            'Ya tienes una cuenta con ese email. Inicia sesion con tu contrasena o usa otra cuenta de Google.',
+          );
+        } else {
+          setError(e.message || 'Error al iniciar sesion con Google.');
+        }
+      } finally {
+        setGoogleLoading(false);
+      }
+    },
+    [loginWithGoogle, navigate],
+  );
 
   if (isLoading) return null;
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
@@ -136,19 +161,16 @@ export function LoginPage() {
               <div className="h-px flex-1 bg-border/50" />
             </div>
 
-            <button
-              type="button"
-              onClick={() => setGoogleClicked((v) => !v)}
-              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[10px] border border-border bg-card text-sm font-bold text-card-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              <span className="text-base font-black text-[#4285F4] font-[Arial,sans-serif]">G</span>
-              Iniciar sesion con Google
-            </button>
-
-            {googleClicked && (
-              <p className="mt-3 rounded-[10px] bg-accent px-3 py-2.5 text-xs font-semibold text-accent-foreground">
-                Google OAuth todavia no esta conectado. Este boton queda listo para la integracion.
-              </p>
+            {googleLoading ? (
+              <div className="flex h-10 w-full items-center justify-center gap-2 rounded-[4px] border border-border bg-card text-sm font-semibold text-muted-foreground">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Verificando con Google...
+              </div>
+            ) : (
+              <GoogleSignInButton
+                onCredential={handleGoogleCredential}
+                disabled={submitting}
+              />
             )}
 
             <p className="mt-5 text-center text-xs text-muted-foreground">

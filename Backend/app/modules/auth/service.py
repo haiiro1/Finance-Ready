@@ -5,7 +5,8 @@ from sqlmodel import Session, select
 
 from app.core.config import settings
 from app.core.email import send_recovery_email, send_verification_email
-from app.database.models import EmailVerificationCode, PasswordRecoveryCode, User
+from app.core.google_identity import GoogleAuthUnavailable, GoogleTokenError, verify_google_id_token
+from app.database.models import EmailVerificationCode, PasswordRecoveryCode, User, UserIdentity
 from app.modules.auth.schemas import (
     AuthResponse,
     EmailVerificationConfirmRequest,
@@ -49,6 +50,18 @@ class InvalidRecoveryCodeError(Exception):
 
 
 class InvalidVerificationCodeError(Exception):
+    pass
+
+
+class InvalidGoogleTokenError(Exception):
+    pass
+
+
+class GoogleAuthUnavailableError(Exception):
+    pass
+
+
+class GoogleLinkRequiredError(Exception):
     pass
 
 
@@ -125,7 +138,7 @@ def register_user(request: UserRegisterRequest, session: Session) -> RegisterRes
 
 def authenticate_user(email: str, password: str, session: Session) -> User:
     user = session.exec(select(User).where(User.email == email)).first()
-    if not user or not verify_password(password, user.hashed_password):
+    if not user or not user.hashed_password or not verify_password(password, user.hashed_password):
         raise CredentialsError("Invalid credentials")
     if not user.is_active:
         raise InactiveUserError("User is inactive")
@@ -277,6 +290,111 @@ def confirm_email_verification(
     session.commit()
 
     return EmailVerificationConfirmResponse(message="Email verified successfully.")
+
+
+def login_with_google(credential: str, session: Session) -> AuthResponse:
+    try:
+        claims = verify_google_id_token(credential)
+    except GoogleAuthUnavailable as exc:
+        raise GoogleAuthUnavailableError(str(exc)) from exc
+    except GoogleTokenError as exc:
+        raise InvalidGoogleTokenError(str(exc)) from exc
+
+    normalized_email = claims.email.strip().lower()
+
+    identity = session.exec(
+        select(UserIdentity).where(
+            UserIdentity.provider == "google",
+            UserIdentity.provider_subject == claims.sub,
+        )
+    ).first()
+
+    if identity:
+        user = session.exec(select(User).where(User.id == identity.user_id)).first()
+        if not user or not user.is_active:
+            raise InactiveUserError("Account is inactive")
+        token = create_access_token(subject=user.id)
+        return AuthResponse(access_token=token, token_type="bearer", user=_user_response(user))
+
+    existing_user = session.exec(select(User).where(User.email == normalized_email)).first()
+    if existing_user:
+        raise GoogleLinkRequiredError("google_link_required")
+
+    now = datetime.now(timezone.utc)
+    user = User(
+        email=normalized_email,
+        full_name=claims.name,
+        hashed_password=None,
+        is_active=True,
+        email_verified=True,
+        created_at=now,
+        updated_at=now,
+    )
+    session.add(user)
+    try:
+        session.flush()
+    except IntegrityError:
+        session.rollback()
+        # A concurrent request may have created the same Google user already.
+        # Re-query by sub before deciding it's a local-account collision.
+        recovered_identity = session.exec(
+            select(UserIdentity).where(
+                UserIdentity.provider == "google",
+                UserIdentity.provider_subject == claims.sub,
+            )
+        ).first()
+        if recovered_identity:
+            recovered_user = session.exec(
+                select(User).where(User.id == recovered_identity.user_id)
+            ).first()
+            if not recovered_user or not recovered_user.is_active:
+                raise InactiveUserError("Account is inactive")
+            token = create_access_token(subject=recovered_user.id)
+            return AuthResponse(
+                access_token=token,
+                token_type="bearer",
+                user=_user_response(recovered_user),
+            )
+        raise GoogleLinkRequiredError("google_link_required")
+
+    new_identity = UserIdentity(
+        user_id=user.id,
+        provider="google",
+        provider_subject=claims.sub,
+        provider_email=claims.email,
+        created_at=now,
+        updated_at=now,
+    )
+    session.add(new_identity)
+    try:
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        # A concurrent request may have created the same identity (same sub).
+        # Re-query before assuming it's an email collision.
+        recovered_identity = session.exec(
+            select(UserIdentity).where(
+                UserIdentity.provider == "google",
+                UserIdentity.provider_subject == claims.sub,
+            )
+        ).first()
+        if recovered_identity:
+            recovered_user = session.exec(
+                select(User).where(User.id == recovered_identity.user_id)
+            ).first()
+            if not recovered_user or not recovered_user.is_active:
+                raise InactiveUserError("Account is inactive")
+            token = create_access_token(subject=recovered_user.id)
+            return AuthResponse(
+                access_token=token,
+                token_type="bearer",
+                user=_user_response(recovered_user),
+            )
+        raise GoogleLinkRequiredError("google_link_required")
+
+    session.refresh(user)
+    token = create_access_token(subject=user.id)
+    return AuthResponse(access_token=token, token_type="bearer", user=_user_response(user))
 
 
 def resend_email_verification(

@@ -10,6 +10,7 @@ from app.modules.auth.schemas import (
     EmailVerificationConfirmResponse,
     EmailVerificationResendRequest,
     EmailVerificationResendResponse,
+    GoogleLoginRequest,
     PasswordRecoveryRequest,
     PasswordRecoveryRequestResponse,
     PasswordResetConfirmRequest,
@@ -22,12 +23,16 @@ from app.modules.auth.schemas import (
 from app.modules.auth.service import (
     CredentialsError,
     EmailNotVerifiedError,
+    GoogleAuthUnavailableError,
+    GoogleLinkRequiredError,
     InactiveUserError,
+    InvalidGoogleTokenError,
     InvalidRecoveryCodeError,
     InvalidVerificationCodeError,
     confirm_email_verification,
     confirm_password_reset,
     login_user,
+    login_with_google,
     register_user,
     request_password_recovery,
     resend_email_verification,
@@ -106,6 +111,51 @@ def email_verification_confirm(
         return confirm_email_verification(request, session)
     except InvalidVerificationCodeError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.post("/google", response_model=AuthResponse)
+def google_login(
+    request: GoogleLoginRequest,
+    session: Session = Depends(get_session),
+) -> AuthResponse:
+    try:
+        return login_with_google(request.credential, session)
+    except InvalidGoogleTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "invalid_google_token",
+                "message": "Token de Google invalido, expirado o sin claims suficientes.",
+                "field": None,
+            },
+        )
+    except GoogleAuthUnavailableError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={
+                "code": "google_auth_unavailable",
+                "message": "Autenticacion con Google no disponible temporalmente.",
+                "field": None,
+            },
+        )
+    except InactiveUserError:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "code": "inactive_user",
+                "message": "La cuenta esta desactivada.",
+                "field": None,
+            },
+        )
+    except GoogleLinkRequiredError:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "google_link_required",
+                "message": "Ya existe una cuenta con este email. Inicia sesion con tu contrasena.",
+                "field": None,
+            },
+        )
 
 
 @router.post(

@@ -127,3 +127,7 @@ export type EmailVerificationResendResponse = {
   verification_code?: string;
   email_sent: boolean;
 };
+
+export type GoogleLoginRequest = {
+  credential: string;
+};

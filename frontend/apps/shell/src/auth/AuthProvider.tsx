@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { AuthUser } from '@finance-ready/shared-types';
 import { AuthContext } from './authContext';
-import { getMe, login as apiLogin } from './authApi';
+import { getMe, login as apiLogin, loginWithGoogle as apiLoginWithGoogle } from './authApi';
 import { authStorage } from './authStorage';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -33,6 +33,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(response.user);
   }, []);
 
+  const loginWithGoogle = useCallback(async (credential: string) => {
+    const response = await apiLoginWithGoogle({ credential });
+    authStorage.set(response.access_token, response.user);
+    setToken(response.access_token);
+    setUser(response.user);
+  }, []);
+
   const logout = useCallback(() => {
     authStorage.clear();
     setToken(null);
@@ -47,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: !!user,
         isLoading,
         login,
+        loginWithGoogle,
         logout,
       }}
     >
