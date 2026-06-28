@@ -13,11 +13,17 @@ import { PrestamosDeudasPage } from './prestamos-deudas/PrestamosDeudasPage';
 import { SuscripcionesPage } from './suscripciones/SuscripcionesPage';
 import { ReportesPage } from './reportes/ReportesPage';
 import { ConfiguracionPage } from './configuracion/ConfiguracionPage';
+import { LandingPage } from './landing/LandingPage';
+import { PrivacyPage } from './landing/PrivacyPage';
+import { TermsPage } from './landing/TermsPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
@@ -25,7 +31,6 @@ function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<ShellLayout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/finanzas" element={<FinanzasPage />} />
             <Route path="/bancos-tarjetas" element={<BancosTarjetasPage />} />
