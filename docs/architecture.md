@@ -1,5 +1,27 @@
 # Arquitectura — Finance Ready
 
+La definición funcional y los límites de cada dominio están documentados en
+[`docs/product-domains.md`](product-domains.md).
+El contrato financiero transversal está documentado en
+[`docs/financial-contract.md`](financial-contract.md).
+La numeración y alcance de historias de integración están documentados en
+[`docs/hu-numbering.md`](hu-numbering.md).
+La numeración y alcance de historias de integración están documentados en
+[`docs/hu-numbering.md`](hu-numbering.md).
+
+## Terminología vigente
+
+- El backend actual es un **monolito modular** FastAPI. Sus carpetas bajo
+  `Backend/app/modules/` son módulos de dominio, no microservicios desplegables.
+- El frontend actual es una sola aplicación React en `frontend/apps/shell`.
+- Las carpetas `frontend/apps/<dominio>` están preparadas para una separación futura, pero
+  todavía no son microfrontends funcionales ni desplegables independientes.
+- PostgreSQL es una dependencia compartida del backend actual; no existe una base de datos
+  por dominio.
+
+Esta terminología debe conservarse hasta que exista una decisión arquitectónica y una
+implementación real de despliegues independientes.
+
 ## Stack
 
 | Capa | Tecnologías |
@@ -82,7 +104,9 @@ frontend/
 └── pnpm-workspace.yaml
 ```
 
-**Estado actual:** `apps/shell` es la única app Vite funcional. El resto son carpetas base preparadas para futuros microfrontends por dominio.
+**Estado actual:** `apps/shell` es la única app Vite funcional. Las páginas de dominio
+también viven temporalmente dentro de `apps/shell/src/`. El resto son carpetas base con
+scripts placeholder, preparadas para una posible separación futura.
 
 ### Reglas de frontend
 
@@ -144,3 +168,7 @@ PostgreSQL:    localhost:5432
 - Los tipos frontend deben reflejar los schemas del backend.
 - El dinero se trata como dato crítico: precisión explícita, moneda explícita, sin conversiones implícitas.
 - Las fechas de vencimiento, ciclos de facturación y cuotas son datos de negocio críticos.
+- Las rutas frontend representan experiencias de usuario y no obligan a crear un servicio
+  backend equivalente.
+- Dashboard y reportes son consumidores de los dominios fuente; no son propietarios de
+  movimientos, obligaciones ni saldos persistidos derivados.
