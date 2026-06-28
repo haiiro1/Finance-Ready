@@ -1,12 +1,12 @@
 // Ubicacion temporal: frontend/apps/shell/src/configuracion/
 // Deuda arquitectonica: mover a frontend/apps/configuracion/ cuando exista scaffold real de microfrontend.
 // Datos de cuenta obtenidos de useAuth() — unicos datos reales disponibles.
-// Preferencias, categorias, umbrales y acciones: sin persistencia en esta HU.
 
 import { useRef } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { Card } from '@finance-ready/ui-kit';
 import { useAuth } from '../auth/useAuth';
+import { FinancialCategoriesPanel } from './FinancialCategoriesPanel';
 
 // ── Section definitions ──
 
@@ -25,22 +25,6 @@ const SECTIONS: Array<{ id: SectionId; label: string }> = [
   { id: 'seguridad', label: 'Seguridad' },
   { id: 'umbrales', label: 'Umbrales financieros' },
   { id: 'riesgo', label: 'Zona de riesgo' },
-];
-
-// ── Demo category data — generic, no personal data, no movement counts ──
-
-const INCOME_CATEGORIES = [
-  { id: 'ic-1', name: 'Sueldo', color: 'bg-sky-400' },
-  { id: 'ic-2', name: 'Honorarios', color: 'bg-teal-400' },
-  { id: 'ic-3', name: 'Otros ingresos', color: 'bg-violet-400' },
-];
-
-const EXPENSE_CATEGORIES = [
-  { id: 'ec-1', name: 'Alimentacion', color: 'bg-fuchsia-400' },
-  { id: 'ec-2', name: 'Transporte', color: 'bg-cyan-400' },
-  { id: 'ec-3', name: 'Vivienda', color: 'bg-orange-400' },
-  { id: 'ec-4', name: 'Salud', color: 'bg-pink-400' },
-  { id: 'ec-5', name: 'Entretenimiento', color: 'bg-indigo-400' },
 ];
 
 // ── Main page ──
@@ -421,62 +405,9 @@ function PreferenciasPanel() {
 // ── Categorias panel ──
 
 function CategoriasPanel() {
-  return (
-    <div className="flex flex-col gap-4">
-      {/* Ingresos */}
-      <Card className="p-4 lg:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <CardHeader
-            title="Categorias de ingresos"
-            description="Clasificacion de entradas de dinero. Datos de ejemplo — sin movimientos reales."
-            compact
-          />
-          <button
-            type="button"
-            disabled
-            title="Proximamente"
-            className="h-8 shrink-0 rounded-lg border px-3 text-xs font-semibold text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Nueva categoria
-          </button>
-        </div>
-        <div className="flex flex-col gap-2">
-          {INCOME_CATEGORIES.map((cat) => (
-            <CategoryRow key={cat.id} name={cat.name} color={cat.color} type="ingreso" />
-          ))}
-        </div>
-      </Card>
-
-      {/* Gastos */}
-      <Card className="p-4 lg:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <CardHeader
-            title="Categorias de gastos"
-            description="Clasificacion de salidas de dinero. Datos de ejemplo — sin movimientos reales."
-            compact
-          />
-          <button
-            type="button"
-            disabled
-            title="Proximamente"
-            className="h-8 shrink-0 rounded-lg border px-3 text-xs font-semibold text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Nueva categoria
-          </button>
-        </div>
-        <div className="flex flex-col gap-2">
-          {EXPENSE_CATEGORIES.map((cat) => (
-            <CategoryRow key={cat.id} name={cat.name} color={cat.color} type="gasto" />
-          ))}
-        </div>
-      </Card>
-
-      <div className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs text-sky-800 dark:border-sky-800/60 dark:bg-sky-950/25 dark:text-sky-300">
-        Los colores de categoria son identificadores visuales y no representan estados financieros.
-        Las categorias usadas en movimientos requieren estrategia de eliminacion o reasignacion.
-      </div>
-    </div>
-  );
+  const { token } = useAuth();
+  // key resets all internal state when the session changes
+  return <FinancialCategoriesPanel key={token ?? ''} />;
 }
 
 // ── Seguridad panel ──
@@ -764,36 +695,6 @@ function ThresholdRow({
   );
 }
 
-function CategoryRow({
-  name,
-  color,
-  type,
-}: {
-  name: string;
-  color: string;
-  type: 'ingreso' | 'gasto';
-}) {
-  return (
-    <div className="flex items-center gap-3 rounded-lg border p-3">
-      <span
-        className={`h-3 w-3 shrink-0 rounded-full ${color}`}
-        aria-hidden="true"
-      />
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-bold text-foreground">{name}</p>
-        <p className="text-xs text-muted-foreground capitalize">{type}</p>
-      </div>
-      <button
-        type="button"
-        disabled
-        title="Proximamente"
-        className="h-8 rounded-lg border px-2.5 text-xs font-semibold text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        Editar
-      </button>
-    </div>
-  );
-}
 
 function StaticSwitch({ on }: { on: boolean }) {
   return (

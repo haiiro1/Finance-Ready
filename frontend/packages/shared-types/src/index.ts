@@ -1,3 +1,56 @@
+// ── Financial categories ──────────────────────────────────────────────────────
+
+export type FinancialCategoryType = 'income' | 'expense';
+
+export type FinancialCategoryColorToken =
+  | 'slate'
+  | 'sky'
+  | 'teal'
+  | 'violet'
+  | 'fuchsia'
+  | 'cyan'
+  | 'orange'
+  | 'pink'
+  | 'emerald'
+  | 'amber'
+  | 'indigo'
+  | 'rose';
+
+export type FinancialCategory = {
+  id: number;
+  name: string;
+  type: FinancialCategoryType;
+  color_token: FinancialCategoryColorToken;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
+
+export type FinancialCategoryCreateRequest = {
+  name: string;
+  type: FinancialCategoryType;
+  color_token: FinancialCategoryColorToken;
+};
+
+export type FinancialCategoryUpdateRequest = {
+  name?: string;
+  color_token?: FinancialCategoryColorToken;
+};
+
+export type FinancialCategoryListResponse = {
+  items: FinancialCategory[];
+  next_cursor: string | null;
+  has_more: boolean;
+};
+
+export type DomainErrorDetail = {
+  code: string;
+  message: string;
+  field: string | null;
+};
+
+// ── Money ────────────────────────────────────────────────────────────────────
+
 export type CurrencyCode = 'CLP' | 'USD' | 'EUR';
 
 export type Money = {
