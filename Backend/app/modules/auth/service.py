@@ -108,7 +108,7 @@ def register_user(request: UserRegisterRequest, session: Session) -> RegisterRes
     session.refresh(user)
 
     plain_code = _create_verification_code_record(user, session)
-    email_sent = send_verification_email(session, user.email, plain_code)
+    email_sent = send_verification_email(user.email, plain_code)
 
     token = create_access_token(subject=user.id)
     verification_code_in_response = (
@@ -186,7 +186,7 @@ def request_password_recovery(
     )
     session.commit()
 
-    email_sent = send_recovery_email(session, user.email, plain_code)
+    email_sent = send_recovery_email(user.email, plain_code)
 
     recovery_code_in_response = (
         plain_code if settings.app_env in ("local", "development") else None
@@ -289,7 +289,7 @@ def resend_email_verification(
         return EmailVerificationResendResponse(message=_GENERIC_VERIFICATION_MESSAGE)
 
     plain_code = _create_verification_code_record(user, session)
-    email_sent = send_verification_email(session, user.email, plain_code)
+    email_sent = send_verification_email(user.email, plain_code)
 
     verification_code_in_response = (
         plain_code if settings.app_env in ("local", "development") else None

@@ -29,20 +29,6 @@ class PasswordRecoveryCode(SQLModel, table=True):
     )
 
 
-class GmailCredential(SQLModel, table=True):
-    __tablename__ = "gmail_credentials"
-
-    id: int | None = Field(default=None, primary_key=True)
-    email: str = Field(index=True, unique=True, nullable=False)
-    token_json: str = Field(nullable=False)
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc), nullable=False
-    )
-    updated_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc), nullable=False
-    )
-
-
 class MigrationCheck(SQLModel, table=True):
     __tablename__ = "migration_checks"
 
