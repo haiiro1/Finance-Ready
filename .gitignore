@@ -191,6 +191,6 @@ dist/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
-/docs
+/docs/HU-*.md
 .env.dev
 /.agents

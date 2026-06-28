@@ -1,108 +1,95 @@
 # Finance Ready
 
 Finance Ready es una plataforma de finanzas personales orientada a obligaciones reales:
-deuda, cuotas, tarjetas, prestamos entre personas, suscripciones compartidas,
-costos financieros y proyeccion futura.
+deudas, cuotas, tarjetas, préstamos entre personas, suscripciones compartidas,
+costos financieros y proyección futura.
 
-El objetivo no es crear una app simple de gastos, sino un sistema modular para gestionar
-obligaciones financieras personales.
+No es un tracker de gastos genérico. El objetivo es ayudar al usuario a entender
+qué debe, cuándo, a quién y cómo los compromisos futuros afectan su capacidad de pago.
 
-## Estado Actual
+## Documentación
 
-El proyecto ya tiene una base funcional con:
+- [Arquitectura](docs/architecture.md) — stack, dominios, infraestructura y reglas arquitectónicas.
+- [Setup local](docs/local-setup.md) — guía paso a paso para Docker, backend local y frontend local.
+
+## Estado actual
+
+El proyecto tiene una base funcional con:
 
 - Frontend dedicado en `frontend/`.
 - Backend dedicado en `Backend/`.
 - Docker Compose para levantar frontend, backend y PostgreSQL juntos.
 - Backend FastAPI modular con healthcheck.
 - Frontend Vite React TypeScript en `apps/shell`.
-- Estructura preparada para microfrontends por dominio.
+- Carpetas preparadas para microfrontends por dominio.
 
 ## Estructura
 
-```txt
+```text
 Finance-Ready/
-|-- Backend/
-|   |-- app/
-|   |   |-- api/
-|   |   |-- core/
-|   |   |-- database/
-|   |   |-- main.py
-|   |   `-- modules/
-|   |       |-- auth/
-|   |       |-- banks/
-|   |       |-- cards/
-|   |       |-- health/
-|   |       |-- loans/
-|   |       |-- notifications/
-|   |       |-- reports/
-|   |       |-- subscriptions/
-|   |       `-- transactions/
-|   |-- migrations/
-|   |-- tests/
-|   |-- Dockerfile
-|   |-- pyproject.toml
-|   `-- .env.example
-|-- frontend/
-|   |-- apps/
-|   |   |-- shell/
-|   |   |-- dashboard/
-|   |   |-- finanzas/
-|   |   |-- bancos-tarjetas/
-|   |   |-- prestamos-deudas/
-|   |   |-- suscripciones/
-|   |   |-- reportes/
-|   |   `-- configuracion/
-|   |-- packages/
-|   |   |-- shared-types/
-|   |   `-- ui-kit/
-|   |-- Dockerfile
-|   |-- package.json
-|   `-- pnpm-workspace.yaml
-`-- docker-compose.yml
+├── Backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── database/
+│   │   ├── main.py
+│   │   └── modules/
+│   │       ├── auth/
+│   │       ├── banks/
+│   │       ├── cards/
+│   │       ├── health/
+│   │       ├── loans/
+│   │       ├── notifications/
+│   │       ├── reports/
+│   │       ├── subscriptions/
+│   │       └── transactions/
+│   ├── migrations/
+│   ├── tests/
+│   ├── Dockerfile
+│   ├── pyproject.toml
+│   └── .env.example
+├── frontend/
+│   ├── apps/
+│   │   ├── shell/              # App Vite funcional actual
+│   │   ├── dashboard/          # Carpeta preparada
+│   │   ├── finanzas/           # Carpeta preparada
+│   │   ├── bancos-tarjetas/    # Carpeta preparada
+│   │   ├── prestamos-deudas/   # Carpeta preparada
+│   │   ├── suscripciones/      # Carpeta preparada
+│   │   ├── reportes/           # Carpeta preparada
+│   │   └── configuracion/      # Carpeta preparada
+│   ├── packages/
+│   │   ├── shared-types/
+│   │   └── ui-kit/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── pnpm-workspace.yaml
+├── docs/
+│   ├── architecture.md
+│   └── local-setup.md
+└── docker-compose.yml
 ```
 
 ## Stack
 
-Frontend:
+**Backend:** Python 3.12, FastAPI, SQLModel, PostgreSQL, Alembic, Pydantic Settings, Ruff, Pytest, uv
 
-- Vite
-- React
-- TypeScript
-- Tailwind CSS
-- pnpm workspaces
-- Arquitectura preparada para microfrontends
+**Frontend:** Vite, React, TypeScript, Tailwind CSS, pnpm workspaces
 
-Backend:
+**Infraestructura:** Docker, Docker Compose, PostgreSQL 16
 
-- Python 3.12
-- FastAPI
-- SQLModel
-- PostgreSQL
-- Alembic
-- Pydantic Settings
-- Ruff
-- Pytest
-- uv para entorno y dependencias
-
-Infraestructura:
-
-- Docker
-- Docker Compose
-- PostgreSQL 16
-
-## Levantar Todo con Docker
-
-Desde la raiz del proyecto:
+## Setup rápido con Docker
 
 ```powershell
 cd F:\Code\Finance-Ready
+copy .env.example .env
 docker compose up -d --build
+docker compose ps
 ```
 
-Servicios:
+URLs locales:
 
-```txt
+```text
 Frontend:      http://localhost:5173
 Backend docs:  http://localhost:8000/docs
 Backend API:   http://localhost:8000/api/v1
@@ -110,167 +97,91 @@ Healthcheck:   http://localhost:8000/api/v1/health
 PostgreSQL:    localhost:5432
 ```
 
-Ver estado:
+Para setup backend local o frontend local, ver [docs/local-setup.md](docs/local-setup.md).
+
+## Comandos Make
 
 ```powershell
-docker compose ps
+make help                    # Lista todos los comandos disponibles
+
+# Docker
+make build                   # Build de todas las imágenes
+make up                      # Levanta el entorno completo
+make down                    # Detiene y elimina contenedores
+make restart                 # Reinicia todos los servicios
+make ps                      # Estado de los contenedores
+make logs                    # Logs de todos los servicios
+make up-service S=backend    # Levanta un servicio específico
+make logs-service S=backend  # Logs de un servicio específico
+make shell S=backend         # Shell interactivo en un servicio
+
+# Calidad
+make backend-lint            # Ruff en Backend/
+make backend-fix             # Auto-fix con Ruff en Backend/
+make backend-test            # Pytest en Backend/
+make test-docker             # Pytest dentro del contenedor backend
+make frontend-lint           # ESLint en frontend/
+make frontend-format         # Prettier en frontend/
+make frontend-format-check   # Verifica formato con Prettier
+make frontend-build          # Compila el workspace frontend
+make lint                    # lint backend + frontend
+make test                    # tests backend
+make validate                # lint + tests + format check + build
+
+# Limpieza
+make clean                   # Elimina contenedores detenidos e imágenes sin tag
+make check-env               # Verifica que exista .env en la raíz
 ```
 
-Ver logs:
+> `make nuke` elimina **todo** (contenedores, imágenes y volúmenes). Usar con precaución.
+
+## Comandos directos
 
 ```powershell
+# Docker
+docker compose up -d --build
+docker compose down
+docker compose ps
 docker compose logs -f backend
 docker compose logs -f frontend
 docker compose logs -f postgres
 ```
 
-Detener contenedores:
-
 ```powershell
-docker compose down
-```
-
-Detener y borrar volumen de PostgreSQL:
-
-```powershell
-docker compose down -v
-```
-
-## Backend Local
-
-Recomendado usar `uv`.
-
-```powershell
+# Backend
 cd F:\Code\Finance-Ready\Backend
-uv sync --dev
 uv run uvicorn app.main:app --reload
-```
-
-Validaciones:
-
-```powershell
 uv run ruff check .
 uv run pytest
 ```
 
-Variables de entorno:
-
 ```powershell
-copy .env.example .env
-```
-
-Endpoints iniciales:
-
-```txt
-GET /api/v1/health
-GET /api/v1/auth/status
-GET /api/v1/banks
-GET /api/v1/cards
-GET /api/v1/transactions
-GET /api/v1/loans
-GET /api/v1/subscriptions
-GET /api/v1/reports
-GET /api/v1/notifications
-```
-
-## Frontend Local
-
-Desde la carpeta dedicada del frontend:
-
-```powershell
+# Frontend
 cd F:\Code\Finance-Ready\frontend
-pnpm.cmd install
 pnpm.cmd dev:shell
-```
-
-Validaciones del shell:
-
-```powershell
-cd F:\Code\Finance-Ready\frontend\apps\shell
 pnpm.cmd lint
+pnpm.cmd format:check
 pnpm.cmd build
 ```
 
-Microfrontends definidos:
-
-- `shell`
-- `dashboard`
-- `finanzas`
-- `bancos-tarjetas`
-- `prestamos-deudas`
-- `suscripciones`
-- `reportes`
-- `configuracion`
-
-Por ahora `shell` es la app Vite funcional. Los demas dominios estan registrados como
-carpetas base para implementar los microfrontends.
-
-## Base de Datos
-
-Docker Compose levanta PostgreSQL con:
-
-```txt
-POSTGRES_USER=finance
-POSTGRES_PASSWORD=finance
-POSTGRES_DB=finance_ready
-```
-
-URL interna para Docker:
-
-```txt
-postgresql+psycopg://finance:finance@postgres:5432/finance_ready
-```
-
-URL local:
-
-```txt
-postgresql+psycopg://finance:finance@localhost:5432/finance_ready
-```
-
-## Roadmap Funcional
+## Roadmap funcional
 
 Prioridad MVP:
 
-1. Auth: login, registro y recuperacion de contrasena.
+1. Auth: login, registro y recuperación de contraseña.
 2. Bancos y productos financieros.
-3. Tarjetas, cupos por moneda y ciclos.
+3. Tarjetas, cupos por moneda y ciclos de facturación.
 4. Ingresos y gastos personales.
 5. Dashboard inicial.
-6. Prestamos, deudas y relaciones financieras entre personas.
+6. Préstamos, deudas y relaciones financieras entre personas.
 7. Suscripciones compartidas.
-8. Reportes y resumenes.
+8. Reportes y resúmenes.
 
 Fases posteriores:
 
 - Cuotas futuras y timeline financiero.
 - Costos financieros reales: intereses, CAE, comisiones.
 - Multi moneda.
-- Cobros automaticos y notificaciones.
-- IA para clasificacion, insights y riesgo financiero.
-- Importacion de cartolas, OCR y automatizacion.
-
-## Comandos Rapidos
-
-```powershell
-# levantar todo
-docker compose up -d --build
-
-# apagar todo
-docker compose down
-
-# backend local
-cd Backend
-uv run uvicorn app.main:app --reload
-
-# frontend local
-cd frontend
-pnpm.cmd dev:shell
-
-# tests backend
-cd Backend
-uv run pytest
-
-# lint backend
-cd Backend
-uv run ruff check .
-```
+- Cobros automáticos y notificaciones.
+- IA para clasificación, insights y riesgo financiero.
+- Importación de cartolas, OCR y automatización.

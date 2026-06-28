@@ -1,17 +1,17 @@
 services:
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: finance_ready_postgres
     environment:
-      POSTGRES_USER: finance
-      POSTGRES_PASSWORD: finance
-      POSTGRES_DB: finance_ready
+      POSTGRES_USER: ${POSTGRES_USER:-finance}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-finance}
+      POSTGRES_DB: ${POSTGRES_DB:-finance_ready}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - finance_ready_postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U finance -d finance_ready"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-finance} -d ${POSTGRES_DB:-finance_ready}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -20,17 +20,30 @@ services:
     build:
       context: ./Backend
     container_name: finance_ready_backend
-    environment:
-      APP_NAME: Finance Ready API
-      APP_ENV: docker
-      API_PREFIX: /api/v1
-      CORS_ORIGINS: http://localhost:5173
-      DATABASE_URL: postgresql+psycopg://finance:finance@postgres:5432/finance_ready
-    ports:
-      - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      APP_ENV: docker
+      DATABASE_URL: "postgresql+psycopg://${POSTGRES_USER:-finance}:${POSTGRES_PASSWORD:-finance}@postgres:5432/${POSTGRES_DB:-finance_ready}"
+      CORS_ORIGINS: "http://localhost:${FRONTEND_PORT:-5173}"
+      SECRET_KEY: "${SECRET_KEY:-dev-secret-change-me-in-production}"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "${ACCESS_TOKEN_EXPIRE_MINUTES:-30}"
+      JWT_ALGORITHM: "${JWT_ALGORITHM:-HS256}"
+      PASSWORD_RECOVERY_CODE_EXPIRE_MINUTES: "${PASSWORD_RECOVERY_CODE_EXPIRE_MINUTES:-15}"
+      EMAIL_VERIFICATION_CODE_EXPIRE_MINUTES: "${EMAIL_VERIFICATION_CODE_EXPIRE_MINUTES:-30}"
+      MAIL_PROVIDER: "${MAIL_PROVIDER:-none}"
+      GMAIL_SENDER_EMAIL: "${GMAIL_SENDER_EMAIL:-}"
+      GMAIL_CLIENT_ID: "${GMAIL_CLIENT_ID:-}"
+      GMAIL_CLIENT_SECRET: "${GMAIL_CLIENT_SECRET:-}"
+      GMAIL_REFRESH_TOKEN: "${GMAIL_REFRESH_TOKEN:-}"
+      GMAIL_REDIRECT_URI: "${GMAIL_REDIRECT_URI:-http://localhost:8000/api/v1/gmail/callback}"
+      FRONTEND_URL: "${FRONTEND_URL:-http://localhost:5173}"
+      ADMIN_SETUP_TOKEN: "${ADMIN_SETUP_TOKEN:-}"
+    volumes:
+      - ./Backend:/app
     healthcheck:
       test:
         [
@@ -47,24 +60,18 @@ services:
     build:
       context: ./frontend
     container_name: finance_ready_frontend
-    environment:
-      VITE_API_URL: http://localhost:8000/api/v1
-    ports:
-      - "5173:5173"
     depends_on:
       backend:
         condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      VITE_API_URL: "http://localhost:${BACKEND_PORT:-8000}/api/v1"
     healthcheck:
-      test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "fetch('http://127.0.0.1:5173').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))",
-        ]
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:5173 || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  finance_ready_postgres_data:
+  postgres_data:

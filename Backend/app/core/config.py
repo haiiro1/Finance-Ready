@@ -1,20 +1,29 @@
-from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    """Application settings."""
+
+    model_config = SettingsConfigDict(env_file=".env.dev", env_file_encoding="utf-8")
 
     app_name: str = "Finance Ready API"
     app_env: str = "local"
     api_prefix: str = "/api/v1"
-    cors_origins_raw: str = Field(default="http://localhost:5173", alias="CORS_ORIGINS")
+    cors_origins: str = "http://localhost:5173"
     database_url: str = "postgresql+psycopg://finance:finance@localhost:5432/finance_ready"
-
-    @property
-    def cors_origins(self) -> list[str]:
-        return [origin.strip() for origin in self.cors_origins_raw.split(",") if origin.strip()]
+    secret_key: str = "dev-secret-change-me-in-production"
+    access_token_expire_minutes: int = 30
+    jwt_algorithm: str = "HS256"
+    password_recovery_code_expire_minutes: int = 15
+    email_verification_code_expire_minutes: int = 30
+    mail_provider: str = "none"
+    gmail_sender_email: str = ""
+    gmail_client_id: str = ""
+    gmail_client_secret: str = ""
+    gmail_refresh_token: str = ""
+    gmail_redirect_uri: str = "http://localhost:8000/api/v1/gmail/callback"
+    frontend_url: str = "http://localhost:5173"
+    admin_setup_token: str = ""
 
 
 settings = Settings()
-
