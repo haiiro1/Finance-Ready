@@ -194,3 +194,15 @@ dist/
 /docs/HU-*.md
 .env.dev
 /.agents
+ai.ps1
+
+# Aider local files
+.aider.chat.history.md
+.aider.input.history
+
+# Local VS Code settings
+.vscode/
+
+# Aider local files
+.aider.chat.history.md
+.aider.input.history
