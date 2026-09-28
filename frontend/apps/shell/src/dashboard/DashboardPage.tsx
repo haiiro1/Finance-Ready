@@ -1,6 +1,7 @@
 import type { SVGProps } from 'react';
 import { Card } from '@finance-ready/ui-kit';
 import { useAuth } from '../auth/useAuth';
+import { usePageTitle } from '../landing/usePageTitle';
 import {
   DEMO_METRICS,
   DEMO_DUE_ITEMS,
@@ -14,6 +15,7 @@ import {
 export function DashboardPage() {
   const { user } = useAuth();
   const displayName = user?.full_name ?? user?.email?.split('@')[0] ?? 'usuario';
+  usePageTitle("Dashboard • Finance Ready");
 
   return (
     <div className="flex flex-col gap-6">
