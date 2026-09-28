@@ -1,4 +1,4 @@
-S ?= backend
+﻿S ?= backend
 
 .DEFAULT_GOAL := help
 
@@ -12,9 +12,9 @@ S ?= backend
 	clean nuke
 
 help:
-	@printf "\033[0;36m╔══════════════════════════════════════════════════════════╗\033[0m\n"
-	@printf "\033[0;36m║              Finance Ready - Developer CLI              ║\033[0m\n"
-	@printf "\033[0;36m╚══════════════════════════════════════════════════════════╝\033[0m\n\n"
+	@printf "\033[0;36mâ•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—\033[0m\n"
+	@printf "\033[0;36mâ•‘              Finance Ready - Developer CLI              â•‘\033[0m\n"
+	@printf "\033[0;36mâ•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•\033[0m\n\n"
 	@printf "\033[0;33mEntorno\033[0m\n"
 	@printf "  check-env              Verifica que exista el archivo .env en la raiz\n"
 	@printf "\n\033[0;33mDocker\033[0m\n"
@@ -42,21 +42,13 @@ help:
 	@printf "  validate               Ejecuta lint, tests, formato check y build\n"
 	@printf "\n\033[0;33mLimpieza\033[0m\n"
 	@printf "  clean                  Elimina contenedores detenidos e imagenes sin tag\n"
-	@printf "  nuke                   ⚠️  Elimina TODO (contenedores, imagenes, volumenes). Usar con precaucion.\n"
+	@printf "  nuke                   âš ï¸  Elimina TODO (contenedores, imagenes, volumenes). Usar con precaucion.\n"
 	@printf "\n\033[0;33mOpciones:\033[0m\n"
 	@printf "  S=<servicio>           Nombre del servicio Docker (default: backend). Servicios: postgres backend frontend\n"
 
 # --- Entorno ---
 
-check-env:
-	@if [ ! -f .env ]; then \
-		printf "\033[0;31mError: falta el archivo .env en la raiz del proyecto.\033[0m\n"; \
-		printf "Copialo desde .env.example:\n"; \
-		printf "  cp .env.example .env\n"; \
-		exit 1; \
-	else \
-		printf "\033[0;32m.env encontrado.\033[0m\n"; \
-	fi
+check-env: ; @$(if $(wildcard .env),echo .env encontrado.,$(error Error: falta el archivo .env en la raiz del proyecto. Copialo desde .env.example))
 
 # --- Docker ---
 
@@ -135,3 +127,7 @@ clean:
 nuke:
 	docker compose down -v --remove-orphans
 	docker system prune -af --volumes
+
+
+
+
